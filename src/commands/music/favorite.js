@@ -160,8 +160,8 @@ class Favorite extends Command {
         user = await player.updateQueue(user.musicFavorite[Object.keys(user.musicFavorite)[query.join('')-1]], message);
         this.client.music[message.guild.id].index = 0;
         if (player.hasPermission(message)) {
-          if (!client.music[message.guild.id].connection) {
-            client.music[message.guild.id].connection =
+          if (!this.client.music[message.guild.id].connection) {
+            this.client.music[message.guild.id].connection =
               await message.member.voice.channel.join();
           };
         };
