@@ -48,9 +48,6 @@ class Personnage extends Command {
         },
       });
     };
-    const message_loading = await message.channel.send(
-      language(guild.lg, 'command_anime_loading'),
-    );
     let serialize = query.join(' ');
     serialize = serialize.split(/-+/g);
     serialize.shift();
