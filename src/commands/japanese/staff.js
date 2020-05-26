@@ -48,7 +48,7 @@ class Staff extends Command {
         },
       });
     };
-    function convert (d) {
+    function convert(d) {
       return Util.convertToMarkdown(
         Util.convertHtmlEntities(
           Util.reduceString(d, 2000)));
@@ -75,11 +75,6 @@ class Staff extends Command {
       data,
       type: 'staff',
     };
-    function convert (d) {
-      return Util.convertToMarkdown(
-        Util.convertHtmlEntities(
-          Util.reduceString(d, 2000)));
-    };
     this.client.anime[message.guild.id].message =
         await message.channel.send({
           embed: {
@@ -90,8 +85,8 @@ class Staff extends Command {
               '  -  ID: ' +
               data[this.client.anime[message.guild.id].pagination].id + ' · ' +
               data[this.client.anime[message.guild.id].pagination].id_page.slice(1, data[this.client.anime[message.guild.id].pagination].id_page.length-1)),
-            description: data[
-                  this.client.anime[message.guild.id].pagination].biographie || 'aucune donnée',
+            description: convert(data[
+                  this.client.anime[message.guild.id].pagination].biographie || 'aucune donnée'),
             thumbnail: data[this.client.anime[message.guild.id].pagination].image ?
             {url: encodeURI(data[this.client.anime[message.guild.id].pagination].image)} :
             {},
