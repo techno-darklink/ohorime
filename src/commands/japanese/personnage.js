@@ -86,33 +86,37 @@ class Personnage extends Command {
       data,
       type: 'personnage',
     };
-    message_loading.delete({timeout: 0});
+    function convert (d) {
+      return Util.convertToMarkdown(
+        Util.convertHtmlEntities(
+          Util.reduceString(d, 2000)));
+    };
     this.client.anime[message.guild.id].message =
         await message.channel.send({
           embed: {
             color: '#2F3136',
-            title: data[this.client.anime[message.guild.id].pagination].prenom +
+            title: convert(data[this.client.anime[message.guild.id].pagination].prenom +
               ' '+
               data[this.client.anime[message.guild.id].pagination].nom +
               '  -  ID: ' +
               data[this.client.anime[message.guild.id].pagination].id + ' · ' +
-              data[this.client.anime[message.guild.id].pagination].id_page.slice(1, data[this.client.anime[message.guild.id].pagination].id_page.length-1),
-            description: data[
-                  this.client.anime[message.guild.id].pagination].biographie || 'aucune donnée',
+              data[this.client.anime[message.guild.id].pagination].id_page.slice(1, data[this.client.anime[message.guild.id].pagination].id_page.length-1)),
+            description: convert(data[
+                  this.client.anime[message.guild.id].pagination].biographie || 'aucune donnée'),
             thumbnail: data[this.client.anime[message.guild.id].pagination].image ?
               {url: encodeURI(data[this.client.anime[message.guild.id].pagination].image)} :
               {},
             fields: [
               {
                 name: 'native',
-                value: data[
-                    this.client.anime[message.guild.id].pagination].native || 'aucune donnée',
+                value: convert(data[
+                    this.client.anime[message.guild.id].pagination].native || 'aucune donnée'),
                 inline: true,
               },
               {
                 name: 'alternative',
-                value: data[
-                    this.client.anime[message.guild.id].pagination].alternative|| 'aucune donnée',
+                value: convert(data[
+                    this.client.anime[message.guild.id].pagination].alternative|| 'aucune donnée'),
                 inline: true,
               },
             ],

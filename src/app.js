@@ -39,11 +39,8 @@ class AkiraClient extends Client {
     };
     this.anime = {};
     this.coreExchange = coreExchange;
-    this.anemy = new Anemy({
+    this.anemy = new Anemy.Client({
       token: ANEMY.TOKEN,
-      htmlEntitiesDecoder: true,
-      MarkdownEncoder: true,
-      setLimitString: 2000,
     });
   };
   /**

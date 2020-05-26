@@ -2,6 +2,7 @@
 'use strict';
 const Command = require('../../plugin/Command');
 const language = require('../../i18n');
+const {Util} = require('node-anemy');
 
 /**
    * Command class
@@ -48,9 +49,6 @@ class Anime extends Command {
         },
       });
     };
-    const message_loading = await message.channel.send(
-      language(guild.lg, 'command_anime_loading'),
-    );
     let serialize = query.join(' ');
     serialize = serialize.split(/-+/g);
     serialize.shift();
@@ -87,13 +85,19 @@ class Anime extends Command {
       data,
       type: 'anime',
     };
+    function convert (d) {
+      return Util.convertToMarkdown(
+        Util.convertHtmlEntities(
+          Util.reduceString(d, 2000)));
+    };
     const embed = {
       color: '#2F3136',
-      title: data[this.client.anime[message.guild.id].pagination].romaji +
+      title: convert(
+            data[this.client.anime[message.guild.id].pagination].romaji +
         '  -  ID: ' +
-        data[this.client.anime[message.guild.id].pagination].id,
-      description: data[
-            this.client.anime[message.guild.id].pagination].description  || 'aucune donnée',
+        data[this.client.anime[message.guild.id].pagination].id, 2000),
+      description: convert(data[
+            this.client.anime[message.guild.id].pagination].description  || 'aucune donnée'),
       thumbnail: data[this.client.anime[message.guild.id].pagination].affiche ?
         { url: encodeURI(data[this.client.anime[message.guild.id].pagination].affiche) } :
         {},
@@ -103,67 +107,67 @@ class Anime extends Command {
       fields: [
         {
           name: 'episodes',
-          value: data[
-              this.client.anime[message.guild.id].pagination].episodes || 'aucune donnée',
+          value: convert(data[
+              this.client.anime[message.guild.id].pagination].episodes || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'statut',
-          value: data[
-              this.client.anime[message.guild.id].pagination].statut || 'aucune donnée',
+          value: convert(data[
+              this.client.anime[message.guild.id].pagination].statut || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'licence',
-          value: data[
-              this.client.anime[message.guild.id].pagination].licence || 'aucune donnée',
+          value: convert(data[
+              this.client.anime[message.guild.id].pagination].licence || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'saison',
-          value: data[
-              this.client.anime[message.guild.id].pagination].saison || 'aucune donnée',
+          value: convert(data[
+              this.client.anime[message.guild.id].pagination].saison || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'studio',
-          value: data[
-              this.client.anime[message.guild.id].pagination].studio  || 'aucune donnée',
+          value: convert(data[
+              this.client.anime[message.guild.id].pagination].studio || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'producteur',
-          value: data[
-              this.client.anime[message.guild.id].pagination].producteur  || 'aucune donnée',
+          value: convert(data[
+              this.client.anime[message.guild.id].pagination].producteur || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'source',
-          value: data[
-              this.client.anime[message.guild.id].pagination].source  || 'aucune donnée',
+          value: convert(data[
+              this.client.anime[message.guild.id].pagination].source || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'durée',
-          value: data[
-              this.client.anime[message.guild.id].pagination].duree  || 'aucune donnée',
+          value: convert(data[
+              this.client.anime[message.guild.id].pagination].duree || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'categorie',
-          value: data[
-              this.client.anime[message.guild.id].pagination].categorie  || 'aucune donnée',
+          value: convert(data[
+              this.client.anime[message.guild.id].pagination].categorie || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'format',
-          value: data[
-              this.client.anime[message.guild.id].pagination].format  || 'aucune donnée',
+          value: convert(data[
+              this.client.anime[message.guild.id].pagination].format || 'aucune donnée'),
         },
         {
           name: 'pays',
-          value: data[
-              this.client.anime[message.guild.id].pagination].pays  || 'aucune donnée',
+          value: convert(data[
+              this.client.anime[message.guild.id].pagination].pays || 'aucune donnée'),
           inline: true,
         },
         {
@@ -181,7 +185,6 @@ class Anime extends Command {
         icon_url: 'https://gblobscdn.gitbook.com/spaces%2F-M4jTJ1TeTR2aTI4tuTG%2Favatar-1586713303918.png?generation=1586713304401821&alt=media',
       },
     };
-    message_loading.delete({timeout: 0});
     this.client.anime[message.guild.id].message =
       await message.channel.send({embed});
     if (data.length > 1) {
