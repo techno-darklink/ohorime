@@ -196,9 +196,9 @@ class Message {
         .startsWith(this.user.username.toLowerCase())) {
       query = message.content
           .slice(this.user.username.length).trim().split(/ +/g);
-    } else if (message.content.startsWith('<@!704867756595478549>')) {
+    } else if (message.content.split(`<@${this.id}>`)) {
       query = message.content
-          .slice(this.user.username.length).trim().split(/ +/g);
+          .slice(this.id + 3).trim().split(/ +/g);
       query.shift();
     } else return;
     /**
