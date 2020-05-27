@@ -107,7 +107,7 @@ module.exports = {
     'command_gecg_description': 'Send an image of gecg',
     'command_avatar_description': 'Send an image of avatar',
     'command_why_description': 'Send a question (english only)',
-    'command_cattext_description': 'Envoie un cat text',
+    'command_cattext_description': 'Send a cat text',
     'command_8ball_description': 'Answer your questions',
     'command_owoify_description': 'OwOify your text',
     'command_owoify_requireValue': 'Please select enter a text',

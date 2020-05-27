@@ -50,7 +50,8 @@ class Eval extends Command {
     try {
       const evaled = eval(code);
       const cleanCode = await clean(evaled);
-      message.channel.send(cleanCode, {code: 'js'});
+      message.channel.send(cleanCode, {code: 'js'})
+        .catch(e => message.channel.send(e, {code: 'js'}));
     } catch (error) {
       message.channel.send(error, {code: 'js'});
     };

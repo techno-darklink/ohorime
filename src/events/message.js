@@ -192,12 +192,12 @@ class Message {
         .startsWith(guild.prefix.toLowerCase())) {
       query = message.content
           .slice(guild.prefix.length).trim().split(/ +/g);
-    } else if (message.content.toLowerCase()
-        .startsWith(this.user.username.toLowerCase())) {
+    } else if (message.content.trim().toLowerCase()
+        .startsWith(this.user.username.trim().toLowerCase())) {
       query = message.content
           .slice(this.user.username.length).trim().split(/ +/g);
-    } else if (message.content.split(`<@${this.id}>`)) {
-      query = message.content
+    } else if (message.content.trim().startsWith(`<@${this.id}>`)) {
+      query = message.content.trim()
           .slice(this.id + 3).trim().split(/ +/g);
       query.shift();
     } else return;
