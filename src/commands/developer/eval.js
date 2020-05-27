@@ -21,7 +21,7 @@ function clean(text) {
 /**
  * Command class
  */
-class Eval extends Command {
+module.exports = class Eval extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -57,5 +57,3 @@ class Eval extends Command {
     };
   };
 };
-
-module.exports = Eval;

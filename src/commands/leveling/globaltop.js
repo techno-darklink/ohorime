@@ -1,7 +1,7 @@
 /* eslint-disable */
 'use strict';
 const Command = require('../../plugin/Command');
-const {User} = require('../../database/lib');
+const {LevelingUser} = require('../../database/lib');
 const language = require('./../../i18n');
 
 /**
@@ -24,7 +24,7 @@ function calculatepoint(messages) {
 /**
  * Command class
  */
-class GlobalTop extends Command {
+module.exports = class GlobalTop extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -51,7 +51,7 @@ class GlobalTop extends Command {
    * @return {Message}
    */
   async launch(message, query, {guild, user}) {
-    const users = await User.find();
+    const users = await LevelingUser.find();
     /**
      * All board users and sort
      * @type {Array<object>}
@@ -59,6 +59,7 @@ class GlobalTop extends Command {
     const rawBoard = users.sort((a, b) =>  b.messageCount - a.messageCount);
     const embed = {
       title: language(guild.lg, 'command_globaltop_embed_title'),
+      color: guild.color,
       fields: [],
     };
    for (const user in rawBoard.slice(0, 6)) {
@@ -71,5 +72,3 @@ class GlobalTop extends Command {
    message.channel.send({embed});
   };
 };
-
-module.exports = GlobalTop;

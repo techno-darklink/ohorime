@@ -6,7 +6,7 @@ const language = require('../../i18n');
 /**
  * Help command
  */
-class Help extends Command {
+module.exports = class Help extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -98,5 +98,3 @@ class Help extends Command {
     return message.channel.send(content);
   };
 };
-
-module.exports = Help;

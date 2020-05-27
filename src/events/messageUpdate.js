@@ -1,15 +1,29 @@
 'use strict';
 const language = require('./../i18n');
+const event = require('./../plugin/Event');
+
 /**
  * Event MessageUpdate
  */
-class MessageUpdate {
+module.exports = class MessageUpdate extends event {
+  /**
+   * @param {Client} client - Client
+   */
+  constructor(client) {
+    super(client, {
+      name: 'messageUpdate',
+      enable: true,
+      filename: __filename,
+    });
+    this.client = client;
+  };
   /**
    * @param {Message} oldMessage - old message
    * @param {Message} newMessage - new message
    * @return {?Promise<Message>}
    */
   async launch(oldMessage, newMessage) {
+    if (!oldMessage && !newMessage) return;
     const message = newMessage;
     /**
      * Check type message, if author is a bot, message edited
@@ -24,28 +38,27 @@ class MessageUpdate {
       /**
        * Get guild data
        */
-      guild = await this.getGuild(message.guild);
+      guild = await this.client.getGuild(message.guild);
     };
     /**
      * Get user data
      */
-    const user = await this.getUser(message.author);
+    const user = await this.client.getUser(message.author);
     /**
      * Set mutli prefix
      */
     let query;
     if (message.content.toLowerCase()
-        .startsWith(this.config.prefix.toLowerCase())) {
+        .startsWith(guild.prefix.toLowerCase())) {
       query = message.content
-          .slice(this.config.prefix.length).trim().split(/ +/g);
-    } else if (message.content.toLowerCase()
-        .startsWith(this.user.username.toLowerCase())) {
+          .slice(guild.prefix.length).trim().split(/ +/g);
+    } else if (message.content.trim().toLowerCase()
+        .startsWith(this.client.user.username.trim().toLowerCase())) {
       query = message.content
-          .slice(this.user.username.length).trim().split(/ +/g);
-    } else if (message.mentions.users.first() &&
-        message.mentions.users.first().id === this.user.id) {
-      query = message.content
-          .slice(this.user.username.length).trim().split(/ +/g);
+          .slice(this.client.user.username.length).trim().split(/ +/g);
+    } else if (message.content.trim().startsWith(`<@${this.client.id}>`)) {
+      query = message.content.trim()
+          .slice(this.client.id + 3).trim().split(/ +/g);
       query.shift();
     } else return;
     const command = query.shift().toLowerCase();
@@ -62,20 +75,21 @@ class MessageUpdate {
     if (!guild) {
       guild = {
         lg: 'en',
-        color: this.client.config.color,
+        color: this.client.client.config.color,
       };
     };
     /**
      * check if this command exist
      */
-    if (!this.commands.has(command) && !this.aliases.has(command)) {
+    if (!this.client.commands.has(command) &&
+      !this.client.aliases.has(command)) {
       return message.reply(language(guild.lg, 'command_not_found'));
     };
     /**
      * Get command
      */
-    const cmd = this.commands.get(command) ||
-      this.commands.get(this.aliases.get(command));
+    const cmd = this.client.commands.get(command) ||
+      this.client.commands.get(this.client.aliases.get(command));
     /**
      * Check bot permisisons
      */
@@ -122,18 +136,7 @@ class MessageUpdate {
     if (!cmd.conf.enable && !cmd.bypass) {
       return message.reply(language(guild.lg, 'command_disable'));
     };
-    try {
-      /** Execute command */
-      cmd.launch(message, query, {user, guild});
-    } catch (error) {
-      console.warn(error);
-      if (!client.ws.status) return;
-      const guild = client.guilds.get('612430086624247828');
-      if (!guild) return;
-      const channel = guild.channels.get('707414291355271220');
-      channel.send(error, {code: 'js'});
-    };
+    /** Execute command */
+    cmd.launch(message, query, {user, guild});
   };
 };
-
-module.exports = MessageUpdate;

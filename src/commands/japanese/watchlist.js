@@ -4,7 +4,7 @@ const Command = require('../../plugin/Command');
 /**
    * Command class
    */
-class Watchlist extends Command {
+module.exports = class Watchlist extends Command {
   /**
      * @param {Client} client - Client
      */
@@ -32,10 +32,9 @@ class Watchlist extends Command {
   async launch(message, query, {guild}) {
     return message.channel.send({
       embed: {
+        color: guild.color,
         description: `Please login you with anemy: https://ohori.me/callback/anemy`,
       },
     });
   };
 };
-
-module.exports = Watchlist;

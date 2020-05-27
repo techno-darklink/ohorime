@@ -9,7 +9,7 @@ const arisia = new (require('node-arisia'))({
 /**
  * Command class
  */
-class Convolute extends Command {
+module.exports = class Convolute extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -67,5 +67,3 @@ class Convolute extends Command {
     });
   };
 };
-
-module.exports = Convolute;

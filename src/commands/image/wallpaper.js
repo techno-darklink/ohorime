@@ -6,7 +6,7 @@ const {sfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Wallpaper extends Command {
+module.exports = class Wallpaper extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class Wallpaper extends Command {
     });
   };
 };
-
-module.exports = Wallpaper;

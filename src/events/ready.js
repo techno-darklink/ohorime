@@ -1,82 +1,93 @@
 'use strict';
-
 const WebSocket = require('ws');
 const {Guild} = require('./../database/lib');
+const event = require('./../plugin/Event');
 
 /**
  * Event Ready
  */
-class Ready {
+module.exports = class Ready extends event {
   /**
-    * Launch script
-    */
+   * @param {Client} client - Client
+   */
+  constructor(client) {
+    super(client, {
+      name: 'ready',
+      enable: true,
+      filename: __filename,
+    });
+    this.client = client;
+  };
+  /**
+   * Launch script
+   */
   async launch() {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     /**
      * Indicator log
      */
-    this.logger.log(`${this.user.username} is ready !`);
+    this.client.logger.log(`${this.client.user.username} is ready !`);
     /**
      * Fetch application
      */
-    this.appInfo = await this.fetchApplication();
+    this.client.appInfo = await this.client.fetchApplication();
     /**
      * Update application all hours
      */
     setInterval(async () => {
-      this.appInfo = await this.fetchApplication();
+      this.client.appInfo = await this.client.fetchApplication();
     }, 60000);
     let broadcastFollow = 0;
     /**
      * Create jpop broadcast
      */
-    this.jpop.broadcast = this.voice.createBroadcast();
+    this.client.jpop.broadcast = this.client.voice.createBroadcast();
     /**
      * Create jpop dispatcher
      */
-    this.jpop.dispatcher = this.jpop.broadcast.play('https://listen.moe/stream');
+    this.client.jpop.dispatcher = this.client.jpop.broadcast.play('https://listen.moe/stream');
     /**
      * Events jpop broadcast and subscriber counter
      */
-    this.jpop.broadcast.on('subscribe', (dispatcher) => {
+    this.client.jpop.broadcast.on('subscribe', (dispatcher) => {
       console.log('New broadcast subscriber!');
       const guild = dispatcher.player.voiceConnection.channel.guild;
-      this.music[guild.id].broadcast = true;
+      this.client.music[guild.id].broadcast = true;
       broadcastFollow++;
     });
-    this.jpop.broadcast.on('unsubscribe', (dispatcher) => {
+    this.client.jpop.broadcast.on('unsubscribe', (dispatcher) => {
       console.log('Channel unsubscribed from broadcast :(');
       const guild = dispatcher.player.voiceConnection.channel.guild;
-      this.music[guild.id].broadcast = false;
+      this.client.music[guild.id].broadcast = false;
       broadcastFollow--;
     });
     /**
      * Create kpop broadcast
      */
-    this.kpop.broadcast = this.voice.createBroadcast();
+    this.client.kpop.broadcast = this.client.voice.createBroadcast();
     /**
      * Create kpop dispatcher
      */
-    this.kpop.dispatcher = this.kpop.broadcast.play('https://listen.moe/kpop/stream');
+    this.client.kpop.dispatcher = this.client.kpop.broadcast.play('https://listen.moe/kpop/stream');
     /**
      * Events kpop broadcast and subscriber counter
      */
-    this.kpop.broadcast.on('subscribe', (dispatcher) => {
+    this.client.kpop.broadcast.on('subscribe', (dispatcher) => {
       console.log('New broadcast subscriber!');
       const guild = dispatcher.player.voiceConnection.channel.guild;
-      this.music[guild.id].broadcast = true;
+      this.client.music[guild.id].broadcast = true;
       broadcastFollow++;
     });
-    this.kpop.broadcast.on('unsubscribe', (dispatcher) => {
+    this.client.kpop.broadcast.on('unsubscribe', (dispatcher) => {
       console.log('Channel unsubscribed from broadcast :(');
       const guild = dispatcher.player.voiceConnection.channel.guild;
-      this.music[guild.id].broadcast = false;
+      this.client.music[guild.id].broadcast = false;
       broadcastFollow--;
     });
     /**
      * Set presence
      */
-    this.user.setPresence({
+    this.client.user.setPresence({
       activity: {
         name: `les ${broadcastFollow} utilisateurs en train d'écoute la radio`,
         type: 'WATCHING',
@@ -91,7 +102,7 @@ class Ready {
      * Update presence all hours
      */
     setInterval(async () => {
-      this.user.setPresence({
+      this.client.user.setPresence({
         activity: {
           name: `${broadcastFollow} utilisateur écoute les radios`,
           type: 'WATCHING',
@@ -103,8 +114,8 @@ class Ready {
         afk: false,
       });
     }, 60000);
-    if (this.options.shards[0] === 0) {
-      require('../web/server.js')(this);
+    if (this.client.options.shards[0] === 0) {
+      require('../web/server.js')(this.client);
       /** NEW WEBSOCKET OHORI.ME */
       await new Promise((resolve) => setTimeout(resolve, 1500));
       const wss = new WebSocket.Server({
@@ -129,7 +140,7 @@ class Ready {
           // should not be compressed.
         },
       });
-      this.logger.log('ws starting on ws://localhost:8006');
+      this.client.logger.log('ws starting on ws://localhost:8006');
       /**
        * Heartbeat
        * @param {WebSocket} ws
@@ -161,7 +172,8 @@ class Ready {
 
         // GUILD EXCHANGE
         ws.send(JSON.stringify({op: 1, d: {
-          guildCount: await this.shard.fetchClientValues('guilds.cache.size')
+          guildCount: await this.client.shard
+              .fetchClientValues('guilds.cache.size')
               .then((results) =>
                 results.reduce((prev, guildCount) => prev + guildCount, 0),
               ),
@@ -170,20 +182,20 @@ class Ready {
         // MEMBER EXCHANGE
         ws.send(JSON.stringify({op: 1, d: {
           // eslint-disable-next-line max-len
-          memberCount: await this.shard.broadcastEval('this.guilds.cache.reduce((prev, guild) => prev + guild.memberCount, 0)')
+          memberCount: await this.client.shard.broadcastEval('this.client.guilds.cache.reduce((prev, guild) => prev + guild.memberCount, 0)')
               .then((results) =>
                 results.reduce((prev, memberCount) => prev + memberCount, 0),
               ),
         }, t: 'MEMBER_COUNT_UPDATE'}));
         // SHARD INFO
         ws.send(JSON.stringify({op: 1, d: {
-          shards: await this.shard.broadcastEval(`
+          shards: await this.client.shard.broadcastEval(`
             const d = {
-              ping: this.ws.ping,
-              guilds: this.guilds.cache.size,
-              users: this.users.cache.size,
-              gateway: this.ws.gateway,
-              status: this.ws.status,
+              ping: this.client.ws.ping,
+              guilds: this.client.guilds.cache.size,
+              users: this.client.users.cache.size,
+              gateway: this.client.ws.gateway,
+              status: this.client.ws.status,
               memoryUsage: process.memoryUsage(),
             };
             d;
@@ -196,13 +208,13 @@ class Ready {
       setTimeout(function() {
         wss.clients.forEach(async function each(ws) {
           ws.send(JSON.stringify({op: 1, d: {
-            shards: await this.shard.broadcastEval(`
+            shards: await this.client.shard.broadcastEval(`
               const d = {
-                ping: this.ws.ping,
-                guilds: this.guilds.cache.size,
-                users: this.users.cache.size,
-                gateway: this.ws.gateway,
-                status: this.ws.status,
+                ping: this.client.ws.ping,
+                guilds: this.client.guilds.cache.size,
+                users: this.client.users.cache.size,
+                gateway: this.client.ws.gateway,
+                status: this.client.ws.status,
                 memoryUsage: process.memoryUsage(),
               };
               d;
@@ -212,7 +224,7 @@ class Ready {
       }.bind(this), 60000);
 
       /* MESSAGE COUNT */
-      this.coreExchange.on('messageCount', function(count) {
+      this.client.coreExchange.on('messageCount', function(count) {
         wss.clients.forEach(function each(ws) {
           ws.send(JSON.stringify({op: 1, d: {
             messageCount: count,
@@ -220,7 +232,7 @@ class Ready {
         });
       });
       /* GUILD COUNT */
-      this.coreExchange.on('guildCount', function(count) {
+      this.client.coreExchange.on('guildCount', function(count) {
         wss.clients.forEach(function each(ws) {
           ws.send(JSON.stringify({op: 1, d: {
             guildCount: count,
@@ -228,7 +240,7 @@ class Ready {
         });
       });
       /* MEMBER COUNT */
-      this.coreExchange.on('memberCount', function(count) {
+      this.client.coreExchange.on('memberCount', function(count) {
         wss.clients.forEach(function each(ws) {
           ws.send(JSON.stringify({op: 1, d: {
             memberCount: count,
@@ -249,5 +261,3 @@ class Ready {
     };
   };
 };
-
-module.exports = Ready;

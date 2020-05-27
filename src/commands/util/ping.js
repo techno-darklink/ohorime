@@ -4,7 +4,7 @@ const Command = require('../../plugin/Command');
 /**
  * Ping Command
  */
-class Ping extends Command {
+module.exports = class Ping extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -42,12 +42,10 @@ class Ping extends Command {
         `🏓 Pong !\n> Client latency: **${
           this.client.ws.ping
         } ms**\n> API latency: **${
-          pingMessage.createdTimestamp - message.createdTimestamp
+          Date.now() - message.createdTimestamp
         } ms**\n> Speed of the bot to complete a task : **${
           Date.now() - processTime
         } ms**`)
         .catch(console.error);
   };
 };
-
-module.exports = Ping;

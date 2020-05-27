@@ -6,7 +6,7 @@ const {nsfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Spank extends Command {
+module.exports = class Spank extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class Spank extends Command {
     });
   };
 };
-
-module.exports = Spank;

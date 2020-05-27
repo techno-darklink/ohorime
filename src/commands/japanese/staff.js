@@ -7,7 +7,7 @@ const {Util} = require('node-anemy');
 /**
    * Command class
    */
-class Staff extends Command {
+  module.exports = class Staff extends Command {
   /**
      * @param {Client} client - Client
      */
@@ -36,7 +36,7 @@ class Staff extends Command {
     if (!query.join('')) {
       return message.channel.send({
         embed: {
-          color: '#2F3136',
+          color: guild.color,
           title: language(guild.lg, 'command_staff_embed_title'),
           // eslint-disable-next-line max-len
           description: language(guild.lg, 'command_staff_embed_description')
@@ -57,7 +57,7 @@ class Staff extends Command {
     serialize = serialize.split(/-+/g);
     serialize.shift();
     const mapping = [];
-    serialize.map((v) => mapping.push([v.split(/ +/g).shift(), v.split(/ +/g).slice(1).join(' ')]));
+    serialize.map((v) => mapping.push([v.split(/ +/g).shift().trim().toLowerCase(), v.split(/ +/g).slice(1).join(' ')]));
     const params = Object.fromEntries(mapping);
     let data = await this.client.anemy.getStaff(params);
     if (!data || data.length < 1) {
@@ -78,7 +78,7 @@ class Staff extends Command {
     this.client.anime[message.guild.id].message =
         await message.channel.send({
           embed: {
-            color: '#2F3136',
+            color: guild.color,
             title: convert(data[this.client.anime[message.guild.id].pagination].prenom +
               ' '+
               data[this.client.anime[message.guild.id].pagination].nom +
@@ -120,5 +120,3 @@ class Staff extends Command {
     };
   };
 };
-
-module.exports = Staff;

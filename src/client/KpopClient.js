@@ -51,7 +51,10 @@ class KpopClient extends EventEmitter {
           if (response.t !== 'TRACK_UPDATE' &&
           response.t !== 'TRACK_UPDATE_REQUEST' &&
           response.t !== 'QUEUE_UPDATE' &&
-          response.t !== 'NOTIFICATION') break;
+          response.t !== 'NOTIFICATION') {
+            console.log(response);
+            break;
+          };
           // console.log(response.d); // Do something with the data
           this.emit('event', response.d);
           break;

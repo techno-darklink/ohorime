@@ -6,7 +6,7 @@ const moment = require('moment');
 /**
  * Channel command
  */
-class Channel extends Command {
+module.exports = class Channel extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -132,7 +132,7 @@ class Channel extends Command {
        * Create embed
        */
       const embed = {
-        color: '#2F3136',
+        color: guild.color,
         fields: [],
       };
       /**
@@ -155,5 +155,3 @@ class Channel extends Command {
     }
   };
 };
-
-module.exports = Channel;

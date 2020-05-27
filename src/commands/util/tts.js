@@ -9,7 +9,7 @@ const language = require('./../../i18n');
 /**
  * Tts command
  */
-class Tts extends Command {
+module.exports = class Tts extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -132,5 +132,3 @@ class Tts extends Command {
         `/temp/tts/audio-${data.now}-${data.user.id}.mp3`));
   };
 };
-
-module.exports = Tts;

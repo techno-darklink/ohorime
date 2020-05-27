@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Command class
  */
-class Queue extends Command {
+module.exports = class Queue extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -32,19 +32,19 @@ class Queue extends Command {
    * @param {Object} options.guild - guild data
    * @return {Message}
    */
-  async launch(message, query, {guild}) {
-    if (!guild.player_history || guild.player_history.length < 1) {
+  async launch(message, query, {guild, guildPlayer}) {
+    if (!guildPlayer.player_history || guildPlayer.player_history.length < 1) {
       return message.channel.send(language(guild.lg, 'command_music_notQueue'));
     };
     const player = new (require('./play'))(this.client);
     if (!query.join('')) {
       return message.channel.send({
         embed: {
-          color: '#2F3136',
+          color: guild.color,
           title: language(guild.lg, 'command_queue_select')
               .replace(/{{emote}}+/g, this.client.config.emote.no.id),
           description: `arguments: \`clear [all or number]\`\n\n`+
-          `${guild.player_history.map((v, i) =>
+          `${guildPlayer.player_history.map((v, i) =>
             `[${i+1}] ${v.snippet.title}`).join('\n')}`,
         },
       });
@@ -57,12 +57,14 @@ class Queue extends Command {
       );
     };
     if (query.join('') === 'all') {
-      guild.player_history = [];
-      guild = await player.updateQueue(guild.player_history, message);
+      guildPlayer.player_history = [];
+      guildPlayer =
+        await player.updateQueue(guildPlayer.player_history, message);
       return message.react(this.client.config.emote.yes.snowflake);
-    } else if (guild.player_history[query.join('')-1]) {
-      guild.player_history.splice(query.join('')-1, 1);
-      guild = await player.updateQueue(guild.player_history, message);
+    } else if (guildPlayer.player_history[query.join('')-1]) {
+      guildPlayer.player_history.splice(query.join('')-1, 1);
+      guildPlayer =
+        await player.updateQueue(guildPlayer.player_history, message);
       return message.react(this.client.config.emote.yes.snowflake);
     } else {
       // eslint-disable-next-line max-len
@@ -73,5 +75,3 @@ class Queue extends Command {
     }
   };
 };
-
-module.exports = Queue;

@@ -4,7 +4,7 @@ const Command = require('../../plugin/Command');
 /**
  * Command class
  */
-class muteindicator extends Command {
+module.exports = class muteindicator extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -31,21 +31,19 @@ class muteindicator extends Command {
    * @param {Object} options.guild - guild data
    * @return {Message}
    */
-  async launch(message, query, {guild}) {
-    if (guild.player_muteIndicator) {
-      guild.player_muteindicator = false;
-      await this.client.updateGuild(message.guild, {
-        player_muteIndicator: guild.player_muteIndicator,
+  async launch(message, query, {guild, guildPlayer}) {
+    if (guildPlayer.player_muteIndicator) {
+      guildPlayer.player_muteindicator = false;
+      await this.client.updatePlayerGuild(message.guild, {
+        player_muteIndicator: guildPlayer.player_muteIndicator,
       });
       return message.react('❌');
     } else {
-      guild.player_muteIndicator = true;
-      await this.client.updateGuild(message.guild, {
-        player_muteIndicator: guild.player_muteIndicator,
+      guildPlayer.player_muteIndicator = true;
+      await this.client.updatePlayerGuild(message.guild, {
+        player_muteIndicator: guildPlayer.player_muteIndicator,
       });
       return message.react('⭕');
     };
   };
 };
-
-module.exports = muteindicator;

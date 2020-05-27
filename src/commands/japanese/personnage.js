@@ -7,7 +7,7 @@ const {Util} = require('node-anemy');
 /**
    * Command class
    */
-class Personnage extends Command {
+  module.exports = class Personnage extends Command {
   /**
      * @param {Client} client - Client
      */
@@ -36,7 +36,7 @@ class Personnage extends Command {
     if (!query.join('')) {
       return message.channel.send({
         embed: {
-          color: '#2F3136',
+          color: guild.color,
           title: language(guild.lg, 'command_personnage_embed_title'),
           // eslint-disable-next-line max-len
           description: language(guild.lg, 'command_personnage_embed_description')
@@ -52,7 +52,7 @@ class Personnage extends Command {
     serialize = serialize.split(/-+/g);
     serialize.shift();
     const mapping = [];
-    serialize.map((v) => mapping.push([v.split(/ +/g).shift(), v.split(/ +/g).slice(1).join(' ')]));
+    serialize.map((v) => mapping.push([v.split(/ +/g).shift().trim().toLowerCase(), v.split(/ +/g).slice(1).join(' ')]));
     const params = Object.fromEntries(mapping);
     let data = await this.client.anemy.getPersonnage(params);
     if (!data) {
@@ -92,7 +92,7 @@ class Personnage extends Command {
     this.client.anime[message.guild.id].message =
         await message.channel.send({
           embed: {
-            color: '#2F3136',
+            color: guild.color,
             title: convert(data[this.client.anime[message.guild.id].pagination].prenom +
               ' '+
               data[this.client.anime[message.guild.id].pagination].nom +
@@ -134,5 +134,3 @@ class Personnage extends Command {
     };
   };
 };
-
-module.exports = Personnage;

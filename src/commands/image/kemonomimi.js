@@ -6,7 +6,7 @@ const {sfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Kemonomimi extends Command {
+module.exports = class Kemonomimi extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class Kemonomimi extends Command {
     });
   };
 };
-
-module.exports = Kemonomimi;

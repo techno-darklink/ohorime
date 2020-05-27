@@ -5,9 +5,9 @@ const language = require('../../i18n');
 const {Util} = require('node-anemy');
 
 /**
-   * Command class
-   */
-class Anime extends Command {
+ * Command class
+ */
+module.exports = class Anime extends Command {
   /**
      * @param {Client} client - Client
      */
@@ -16,7 +16,7 @@ class Anime extends Command {
       name: 'anime',
       category: 'japanese',
       description: 'command_anime_description',
-      usage: 'anime ()',
+      usage: 'anime (params)',
       nsfw: false,
       enable: true,
       guildOnly: false,
@@ -36,11 +36,11 @@ class Anime extends Command {
     if (!query.join('')) {
       return message.channel.send({
         embed: {
-          color: '#2F3136',
+          color: guild.color,
           title: language(guild.lg, 'command_anime_embed_title'),
           // eslint-disable-next-line max-len
           description: language(guild.lg, 'command_anime_embed_description')
-            .replace(/{{param}}+/g, '\n`id`: [nombre],\n`name` [caractère],\n`épisode` [nomber]\n`days_starts` [nombre] c\'est le jour de début de diffusion de l\'anime,\n`months_starts` [nombre] c\'est le mois de début de diffusion de l\'anime,\n`years_starts` [nombre] c\'est l\'année de début de diffusion de l\'anime,\n`days_ends` [nombre] c\'est le jour de fin de diffusion de l\'anime,\n`months_ends` [nombre] c\'est le mois de fin de diffusion de l\'anime,\n`years_ends` [nombre] c\'est l\'année de fin de diffusion de l\'anime,\n`statut` [caractère] Terminé, Sortie en cours, Pas sortie, Annulé,\n`season` [caractère] Hiver 2019, Printemps 2019, Été 2019, Automne 2019, ... Et toutes les années possibles,\n`studio` [caractère],\n`source` [caractère],\n`duree` [nombre],\n`category` [caractère],\n`format` [caractère] Série TV, Film, OAV, ONA, Spécial, Musique,\n`country` [caractère] Japon, Chine, Corée du Sud, Taïwan, France, Autre,\n`adult` [nombre] 0 ou 1 (1 c\'est que l\'animé est +18 et 0 non !)\n\nexemple: `'+
+            .replace(/{{param}}+/g, '\n`id`: [nombre],\n`romanji` [caractère],\n`épisode` [nomber]\n`days_starts` [nombre] c\'est le jour de début de diffusion de l\'anime,\n`months_starts` [nombre] c\'est le mois de début de diffusion de l\'anime,\n`years_starts` [nombre] c\'est l\'année de début de diffusion de l\'anime,\n`days_ends` [nombre] c\'est le jour de fin de diffusion de l\'anime,\n`months_ends` [nombre] c\'est le mois de fin de diffusion de l\'anime,\n`years_ends` [nombre] c\'est l\'année de fin de diffusion de l\'anime,\n`statut` [caractère] Terminé, Sortie en cours, Pas sortie, Annulé,\n`season` [caractère] Hiver 2019, Printemps 2019, Été 2019, Automne 2019, ... Et toutes les années possibles,\n`studio` [caractère],\n`source` [caractère],\n`duree` [nombre],\n`category` [caractère],\n`format` [caractère] Série TV, Film, OAV, ONA, Spécial, Musique,\n`country` [caractère] Japon, Chine, Corée du Sud, Taïwan, France, Autre,\n`adult` [nombre] 0 ou 1 (1 c\'est que l\'animé est +18 et 0 non !)\n\nexemple: `'+
             guild.prefix + 'anime -format Série TV`'),
           footer: {
             text: language(guild.lg, 'command_anime_embed_footer'),
@@ -53,22 +53,22 @@ class Anime extends Command {
     serialize = serialize.split(/-+/g);
     serialize.shift();
     const mapping = [];
-    serialize.map((v) => mapping.push([v.split(/ +/g).shift(), v.split(/ +/g).slice(1).join(' ')]));
+    serialize.map((v) => mapping.push([v.split(/ +/g).shift().trim().toLowerCase(), v.split(/ +/g).slice(1).join(' ')]));
     const params = Object.fromEntries(mapping);
     let data = await this.client.anemy.getAnime(params);
     if (!data) {
       return message.channel.send(
-        language(guild.lg, 'command_result_any  ')
+        language(guild.lg, 'command_anime_result_any')
       );
     };
     if (data.isAxiosError) {
       return message.channel.send(
-        language(guild.lg, 'command_result_error'),
+        language(guild.lg, 'command_anime_result_error'),
       );
     };
     if (data.length < 1) {
       return message.channel.send(
-        language(guild.lg, 'command_result_any'),
+        language(guild.lg, 'command_anime_result_any'),
       );
     };
     var result = [];
@@ -76,7 +76,7 @@ class Anime extends Command {
     data = data.result || result;
     if (!data || data.length < 1) {
       return message.channel.send(
-        language(guild.lg, 'command_result_any'),
+        language(guild.lg, 'command_anime_result_any'),
       );
     };
     this.client.anime[message.guild.id] = {
@@ -91,7 +91,7 @@ class Anime extends Command {
           Util.reduceString(d, 2000)));
     };
     const embed = {
-      color: '#2F3136',
+      color: guild.color,
       title: convert(
             data[this.client.anime[message.guild.id].pagination].romaji +
         '  -  ID: ' +
@@ -195,5 +195,3 @@ class Anime extends Command {
     };
   };
 };
-
-module.exports = Anime;

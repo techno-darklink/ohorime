@@ -7,7 +7,7 @@ const {MessageAttachment} = require('discord.js');
 /**
  * Command class
  */
-class EightBall extends Command {
+module.exports = class EightBall extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class EightBall extends Command {
         .catch(console.error);
   };
 };
-
-module.exports = EightBall;

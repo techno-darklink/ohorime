@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Command class
  */
-class Destroy extends Command {
+module.exports = class Destroy extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -51,5 +51,3 @@ class Destroy extends Command {
     this.client.music[message.guild.id].dispatcher = null;
   };
 };
-
-module.exports = Destroy;

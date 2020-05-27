@@ -4,8 +4,7 @@
  */
 class Command {
   /**
-    * @param {*} client - Client
-    * @param {Object} param1 - help & conf
+    * @param {Client} client - Client
     */
   constructor(client, {
     name = null,
@@ -18,11 +17,11 @@ class Command {
     userPerm = [],
     mePerm = [],
     aliases = [],
-    bypass = false,
+    filename = __filename,
   }) {
     this.client = client;
     this.help = {name, description, category, usage};
-    this.conf = {enable, guildOnly, aliases, nsfw, userPerm, mePerm, bypass};
+    this.conf = {enable, guildOnly, aliases, nsfw, userPerm, mePerm, filename};
   };
 };
 

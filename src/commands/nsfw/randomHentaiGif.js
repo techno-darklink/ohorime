@@ -6,7 +6,7 @@ const {nsfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class RandomHentaiGif extends Command {
+module.exports = class RandomHentaiGif extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -47,4 +47,3 @@ class RandomHentaiGif extends Command {
   };
 };
 
-module.exports = RandomHentaiGif;

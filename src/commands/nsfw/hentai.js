@@ -6,7 +6,7 @@ const {nsfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Hentai extends Command {
+module.exports = class Hentai extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class Hentai extends Command {
     });
   };
 };
-
-module.exports = Hentai;

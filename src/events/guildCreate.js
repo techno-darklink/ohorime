@@ -1,29 +1,42 @@
 'use strict';
+const event = require('./../plugin/Event');
 
 /**
  * Event GuildCreate
  */
-class GuildCreate {
+module.exports = class GuildCreate extends event {
+  /**
+   * @param {Client} client - Client
+   */
+  constructor(client) {
+    super(client, {
+      name: 'GuildCreate',
+      enable: true,
+      filename: __filename,
+    });
+    this.client = client;
+  };
   /**
     * Launch script
     * @param {Guild} guild
     * @return {Promise<Message>} message
     */
   async launch(guild) {
+    if (!guild) return;
     /**
      * Save guild data
      */
-    await this.createGuild({
+    await this.client.createGuild({
       name: guild.name,
       id: guild.id,
-      prefix: this.config.prefix,
-      color: this.config.color,
+      prefix: this.client.config.prefix,
+      color: this.client.config.color,
     });
     /**
      * Send event
      */
-    this.coreExchange.emit('guildCount',
-        await this.shard.fetchClientValues('guilds.cache.size')
+    this.client.coreExchange.emit('guildCount',
+        await this.client.shard.fetchClientValues('guilds.cache.size')
             .then((results) =>
               results.reduce((prev, guildCount) => prev + guildCount, 0),
             ));
@@ -39,5 +52,3 @@ class GuildCreate {
     };
   };
 };
-
-module.exports = GuildCreate;

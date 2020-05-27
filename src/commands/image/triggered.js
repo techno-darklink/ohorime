@@ -9,7 +9,7 @@ const {MessageAttachment} = require('discord.js');
 /**
  * Command class
  */
-class Triggered extends Command {
+module.exports = class Triggered extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -59,5 +59,3 @@ class Triggered extends Command {
     return message.channel.send({files: [attachment]});
   };
 };
-
-module.exports = Triggered;

@@ -6,7 +6,7 @@ const language = require('./../../i18n');
 /**
  * Command class
  */
-class Upvote extends Command {
+module.exports = class Upvote extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -85,5 +85,3 @@ class Upvote extends Command {
     });
   };
 };
-
-module.exports = Upvote;

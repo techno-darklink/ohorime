@@ -5,7 +5,7 @@ const moment = require('moment');
 /**
  * User command
  */
-class User extends Command {
+module.exports = class User extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -250,7 +250,7 @@ class User extends Command {
        * Create embed
        */
       const embed = {
-        color: '#2F3136',
+        color: guild.color,
         fields: [],
       };
       /**
@@ -273,5 +273,3 @@ class User extends Command {
     }
   };
 };
-
-module.exports = User;

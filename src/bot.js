@@ -1,86 +1,14 @@
 'use strict';
-const {Client, Collection} = require('discord.js');
 const {readdirSync} = require('fs');
-const {DISCORD_TOKEN, CONFIG, ANEMY} = require('./../configuration');
-const {JpopClient, KpopClient} = require('./client');
-const coreExchange = new (require('./plugin/CoreExchange'))();
+const {DISCORD_TOKEN} = require('./../configuration');
 const klaw = require('klaw');
 const {parse, sep} = require('path');
-const Anemy = require('node-anemy');
+const OhorimeClient = require('./OhorimeClient');
 
-/**
- * Class Akira exents Client
- * @class
- */
-class AkiraClient extends Client {
-  /**
-  * Constructor options https://discord.js.org/#/docs/main/master/typedef/ClientOptions
-  * @param {Object} options
-  */
-  constructor(options) {
-    super(options);
-    this.commands = new Collection();
-    this.aliases = new Collection();
-    this.config = CONFIG;
-    this.mongoose = require('./database/mongoose');
-    this.logger = require('./plugin/Logger');
-    this.music = {};
-    this.jpop = {
-      broadcast: null,
-      dispatcher: null,
-      ws: new JpopClient(),
-      data: null,
-    };
-    this.kpop = {
-      broadcast: null,
-      dispatcher: null,
-      ws: new KpopClient(),
-      data: null,
-    };
-    this.anime = {};
-    this.coreExchange = coreExchange;
-    this.anemy = new Anemy.Client({
-      token: ANEMY.TOKEN,
-    });
-  };
-  /**
-  * Load events file
-  * @param {String} eventPath - path to event
-  */
-  loadEvent(eventPath) {
-    try {
-      const RequireEvent = require(`./events/${eventPath}`);
-      const event = new RequireEvent(this);
-      const eventName = eventPath.split('.')[0];
-      this.on(eventName, event.launch.bind(this));
-      this.logger.log(`${eventName} loaded !`);
-    } catch (error) {
-      this.logger.error(eventPath);
-      console.error(error);
-    };
-  };
-  /**
-   * Load commands file
-   * @param {String} commandPath - path to command
-   */
-  loadCommand(commandPath) {
-    try {
-      const RequireCommand = require(commandPath);
-      const command = new RequireCommand(this);
-      this.commands.set(command.help.name, command);
-      command.conf.aliases.forEach((alias) => {
-        this.aliases.set(alias, command.help.name);
-      });
-      this.logger.log(`${command.help.name} loaded !`);
-    } catch (error) {
-      console.error(error);
-    };
-  };
-};
-const client = new AkiraClient({
+const client = new OhorimeClient({
   http: {
-    api: 'https://discordapp.com/api',
-    cdn: 'https://cdn.discordapp.com',
+    api: 'https://discord.com/api',
+    cdn: 'https://cdn.discord.com',
   },
   fetchAllMembers: true,
   ws: {
@@ -154,5 +82,3 @@ process.on('warning', (warning) => {
   const channel = guild.channels.cache.get('707414291355271220');
   channel.send(warning, {code: 'js'});
 });
-
-module.exports = AkiraClient;

@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Command class
  */
-class Resume extends Command {
+module.exports = class Resume extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -51,5 +51,3 @@ class Resume extends Command {
     this.client.music[message.guild.id].isPlaying = true;
   };
 };
-
-module.exports = Resume;

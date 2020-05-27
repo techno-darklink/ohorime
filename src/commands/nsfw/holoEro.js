@@ -6,7 +6,7 @@ const {nsfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class HoloEro extends Command {
+module.exports = class HoloEro extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class HoloEro extends Command {
     });
   };
 };
-
-module.exports = HoloEro;

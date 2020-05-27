@@ -9,7 +9,7 @@ const arisia = new (require('node-arisia'))({
 /**
  * Command class
  */
-class Sepia extends Command {
+module.exports = class Sepia extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -67,5 +67,3 @@ class Sepia extends Command {
     });
   };
 };
-
-module.exports = Sepia;

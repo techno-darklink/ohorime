@@ -6,7 +6,7 @@ const {nsfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Kitsune extends Command {
+module.exports = class Kitsune extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class Kitsune extends Command {
     });
   };
 };
-
-module.exports = Kitsune;

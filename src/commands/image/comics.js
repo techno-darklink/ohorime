@@ -9,7 +9,7 @@ const arisia = new (require('node-arisia'))({
 /**
  * Command class
  */
-class Comics extends Command {
+module.exports = class Comics extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -49,5 +49,3 @@ class Comics extends Command {
     });
   };
 };
-
-module.exports = Comics;

@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Lmgtfy command
  */
-class Lmgtfy extends Command {
+module.exports = class Lmgtfy extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -45,5 +45,3 @@ class Lmgtfy extends Command {
     return message.channel.send(`https://${guild.language}.lmgtfy.com/?q=${query.join('+')}&iie=1`);
   };
 };
-
-module.exports = Lmgtfy;

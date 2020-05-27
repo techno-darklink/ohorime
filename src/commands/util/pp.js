@@ -4,7 +4,7 @@ const Command = require('../../plugin/Command');
 /**
  * Pp command
  */
-class Pp extends Command {
+module.exports = class Pp extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -74,5 +74,3 @@ class Pp extends Command {
     });
   };
 };
-
-module.exports = Pp;

@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Command class
  */
-class Kick extends Command {
+module.exports = class Kick extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -64,12 +64,9 @@ class Kick extends Command {
       message.channel.send(language(guild.lg, 'command_kick_error'));
       return message.channel.send(err, {code: 'js'});
     }).then(() => {
-      console.log(errored);
       if (!errored) {
         message.channel.send(language(guild.lg, 'command_kick_success'));
       };
     });
   };
 };
-
-module.exports = Kick;

@@ -6,7 +6,7 @@ const {nsfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Yuri extends Command {
+module.exports = class Yuri extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class Yuri extends Command {
     });
   };
 };
-
-module.exports = Yuri;

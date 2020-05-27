@@ -6,7 +6,7 @@ const {sfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Poke extends Command {
+module.exports = class Poke extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -65,5 +65,3 @@ class Poke extends Command {
     });
   };
 };
-
-module.exports = Poke;

@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Command class
  */
-class Jpop extends Command {
+module.exports = class Jpop extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -64,7 +64,7 @@ class Jpop extends Command {
     this.client.music[message.guild.id].broadcast = true;
     this.client.music[message.guild.id].type = 'jpop';
     message.channel.send({embed: {
-      color: '#2F3136',
+      color: guild.color,
       description: language(guild.lg,
           'command_broadcast_actualPlaying')
           .replace('{{title}}', this.client.jpop.data.song.title),
@@ -77,5 +77,3 @@ class Jpop extends Command {
     });
   };
 };
-
-module.exports = Jpop;

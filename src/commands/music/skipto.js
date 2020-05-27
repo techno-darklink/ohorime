@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Command class
  */
-class Skipto extends Command {
+module.exports = class Skipto extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -33,7 +33,7 @@ class Skipto extends Command {
    * @param {Object} options.guild - guild data
    * @return {Message}
    */
-  async launch(message, query, {guild}) {
+  async launch(message, query, {guild, guildPlayer}) {
     if (!this.client.music[message.guild.id]) return message.react('💢');
     if (this.client.music[message.guild.id].dispatcher === null) {
       return message.reply(language(guild.lg, 'command_music_notPlaying'));
@@ -52,22 +52,24 @@ class Skipto extends Command {
           language(guild.lg, 'value_is_not_a_number'),
       );
     };
-    if (query.join(' ') > guild.player_history-1) return message.react('💢');
-    switch (guild.player_loop) {
+    if (query.join(' ') >
+      guildPlayer.player_history-1) return message.react('💢');
+    switch (guildPlayer.player_loop) {
       case 'off':
-        guild.player_history = guild.player_history.slice(query.join(' ')-1);
-        guild = await player.updateQueue(guild.player_history, message);
+        guildPlayer.player_history =
+          guildPlayer.player_history.slice(query.join(' ')-1);
+        guildPlayer =
+          await player.updateQueue(guildPlayer.player_history, message);
         this.client.music[message.guild.id].index = 0;
-        player.play(message, guild);
+        player.play(message, guildPlayer, guild);
         break;
       default:
         await this.client.music[message.guild.id].dispatcher.destroy();
-        guild = await player.updateQueue(guild.player_history, message);
+        guildPlayer =
+          await player.updateQueue(guildPlayer.player_history, message);
         this.client.music[message.guild.id].index = query.join(' ')-1;
-        player.play(message, guild);
+        player.play(message, guildPlayer, guild);
         break;
     }
   };
 };
-
-module.exports = Skipto;

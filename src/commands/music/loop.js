@@ -4,7 +4,7 @@ const Command = require('../../plugin/Command');
 /**
  * Command class
  */
-class Loop extends Command {
+module.exports = class Loop extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -31,7 +31,7 @@ class Loop extends Command {
    * @param {Object} options.guild - guild data
    * @return {Message}
    */
-  async launch(message, query, {guild}) {
+  async launch(message, query, {guild, guildPlayer}) {
     const player = new (require('./play'))(this.client);
     await player.initQueue(this.client.music, message.guild.id);
     if (this.client.music[message.guild.id].broadcast) {
@@ -45,43 +45,43 @@ class Loop extends Command {
     };
     switch (query.join('')) {
       case 'off':
-        guild.player_loop = 'off';
+        guildPlayer.player_loop = 'off';
         await this.client.updateGuild(message.guild, {
-          player_loop: guild.player_loop,
+          player_loop: guildPlayer.player_loop,
         });
         message.react('➡️');
         break;
       case 'on':
-        guild.player_loop = 'on';
+        guildPlayer.player_loop = 'on';
         await this.client.updateGuild(message.guild, {
-          player_loop: guild_player_loop,
+          player_loop: guildPlayer.player_loop,
         });
         message.react('🔁');
         break;
       case 'once':
-        guild.player_loop = 'once';
+        guildPlayer.player_loop = 'once';
         await this.client.updateGuild(message.guild, {
-          player_loop: guild_player,
+          player_loop: guildPlayer.player_loop,
         });
         message.react('🔂');
         break;
       default:
         if (guild.player.loop === 'off') {
-          guild.player_loop = 'on';
+          guildPlayer.player_loop = 'on';
           await this.client.updateGuild(message.guild, {
-            player_loop: guild_player,
+            player_loop: guildPlayer.player_loop,
           });
           message.react('🔁');
         } else if (guild.player.loop === 'on') {
-          guild.player_loop = 'once';
+          guildPlayer.player_loop = 'once';
           await this.client.updateGuild(message.guild, {
-            player_loop: guild.player_loop,
+            player_loop: guildPlayer.player_loop,
           });
           message.react('🔂');
         } else if (guild.player.loop === 'once') {
-          guild.player_loop = 'off';
+          guildPlayer.player_loop = 'off';
           await this.client.updateGuild(message.guild, {
-            player_loop: guild.player_loop,
+            player_loop: guildPlayer.player_loop,
           });
           message.react('➡️');
         };
@@ -89,5 +89,3 @@ class Loop extends Command {
     }
   };
 };
-
-module.exports = Loop;

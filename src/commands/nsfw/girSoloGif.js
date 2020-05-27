@@ -6,7 +6,7 @@ const {nsfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class GirlSoloGif extends Command {
+module.exports = class GirlSoloGif extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class GirlSoloGif extends Command {
     });
   };
 };
-
-module.exports = GirlSoloGif;

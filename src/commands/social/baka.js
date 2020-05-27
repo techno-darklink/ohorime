@@ -6,7 +6,7 @@ const {sfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Baka extends Command {
+module.exports = class Baka extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -65,5 +65,3 @@ class Baka extends Command {
     });
   };
 };
-
-module.exports = Baka;

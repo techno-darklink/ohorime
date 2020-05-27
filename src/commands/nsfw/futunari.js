@@ -6,7 +6,7 @@ const {nsfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Futunari extends Command {
+module.exports = class Futunari extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class Futunari extends Command {
     });
   };
 };
-
-module.exports = Futunari;

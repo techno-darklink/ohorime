@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Command class
  */
-class Ban extends Command {
+module.exports = class Ban extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -79,5 +79,3 @@ class Ban extends Command {
         });
   };
 };
-
-module.exports = Ban;

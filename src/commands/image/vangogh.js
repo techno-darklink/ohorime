@@ -9,7 +9,7 @@ const arisia = new (require('node-arisia'))({
 /**
  * Command class
  */
-class Vangogh extends Command {
+module.exports = class Vangogh extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -49,5 +49,3 @@ class Vangogh extends Command {
     });
   };
 };
-
-module.exports = Vangogh;

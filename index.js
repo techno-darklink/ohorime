@@ -1,9 +1,10 @@
 'use strict';
 const {ShardingManager} = require('discord.js');
-const {DISCORD_TOKEN: token} = require('./configuration');
+const {DISCORD_TOKEN} = require('./configuration');
+const {sep, resolve} = require('path');
 
-const manager = new ShardingManager('./src/app.js', {
-  token: token,
+const manager = new ShardingManager(resolve(__dirname, `src${sep}bot.js`), {
+  token: DISCORD_TOKEN,
   totalShards: 'auto',
   shardList: 'auto',
   mode: 'process',

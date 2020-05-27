@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Command class
  */
-class Skip extends Command {
+module.exports = class Skip extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -32,7 +32,7 @@ class Skip extends Command {
    * @param {Object} options.guild - guild data
    * @return {Message}
    */
-  async launch(message, query, {guild}) {
+  async launch(message, query, {guild, guildPlayer}) {
     if (!this.client.music[message.guild.id]) return message.react('💢');
     if (this.client.music[message.guild.id].dispatcher === null) {
       return message.reply(language(guild.lg, 'command_music_notPlaying'));
@@ -46,25 +46,25 @@ class Skip extends Command {
     if (this.client.music[message.guild.id].broadcast) {
       return message.reply('⚠️');
     };
-    switch (guild.player_loop) {
+    switch (guildPlayer.player_loop) {
       case 'off':
-        guild.player_history.shift();
-        guild = await player.updateQueue(guild.player_history, message);
-        player.play(message, guild);
+        guildPlayer.player_history.shift();
+        guildPlayer =
+          await player.updateQueue(guildPlayer.player_history, message);
+        player.play(message, guildPlayer, guild);
         break;
       default:
         await this.client.music[message.guild.id].dispatcher.destroy();
-        guild = await player.updateQueue(guild.player_history, message);
+        guildPlayer =
+          await player.updateQueue(guildPlayer.player_history, message);
         if (this.client.music[message.guild.id].index ===
-            guild.player_history.length - 1) {
+            guildPlayer.player_history.length - 1) {
           this.client.music[message.guild.id].index = 0;
         } else {
           this.client.music[message.guild.id].index++;
         };
-        player.play(message, guild);
+        player.play(message, guildPlayer, guild);
         break;
     }
   };
 };
-
-module.exports = Skip;

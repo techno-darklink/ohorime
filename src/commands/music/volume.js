@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Command class
  */
-class Volume extends Command {
+module.exports = class Volume extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -32,7 +32,7 @@ class Volume extends Command {
    * @param {Object} options.guild - guild data
    * @return {Message}
    */
-  async launch(message, query, {guild}) {
+  async launch(message, query, {guild, guildPlayer}) {
     if (!this.client.music[message.guild.id]) return message.react('💢');
     if (this.client.music[message.guild.id].dispatcher === null) {
       return message.reply(language(guild.lg, 'command_music_notPlaying'));
@@ -55,9 +55,9 @@ class Volume extends Command {
         );
       };
     };
-    guild.player_volume = query[0];
-    await this.client.updateGuild(message.guild, {
-      player_volume: guild.player_volume,
+    guildPlayer.player_volume = query[0];
+    await this.client.updatePlayerGuild(message.guild, {
+      player_volume: guildPlayer.player_volume,
     });
     await this.client.music[message.guild.id].dispatcher
         .setVolume(query[0]/100);
@@ -68,5 +68,3 @@ class Volume extends Command {
     );
   };
 };
-
-module.exports = Volume;

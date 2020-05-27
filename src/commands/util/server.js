@@ -4,7 +4,7 @@ const Command = require('../../plugin/Command');
 /**
  * Server command
  */
-class Server extends Command {
+module.exports = class Server extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -147,5 +147,3 @@ class Server extends Command {
     return message.channel.send({embed});
   };
 };
-
-module.exports = Server;

@@ -6,7 +6,7 @@ const {sfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Gecg extends Command {
+module.exports = class Gecg extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class Gecg extends Command {
     });
   };
 };
-
-module.exports = Gecg;

@@ -5,7 +5,7 @@ const {sfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Cattext extends Command {
+module.exports = class Cattext extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -32,5 +32,3 @@ class Cattext extends Command {
         .catch(console.error);
   };
 };
-
-module.exports = Cattext;

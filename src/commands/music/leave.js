@@ -4,7 +4,7 @@ const Command = require('../../plugin/Command');
 /**
  * Command class
  */
-class Leave extends Command {
+module.exports = class Leave extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -31,6 +31,7 @@ class Leave extends Command {
    */
   async launch(message, query, {guild}) {
     const player = new (require('./play'))(this.client);
+    await player.initQueue(this.client.music, message.guild.id);
     if (!player.hasPermission(message)) {
       return message.channel.send(
           language(guild.lg, 'command_leave_noPerm'),
@@ -44,5 +45,3 @@ class Leave extends Command {
     this.client.music[message.guild.id].connection = null;
   };
 };
-
-module.exports = Leave;

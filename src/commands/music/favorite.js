@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Favorite command
  */
-class Favorite extends Command {
+module.exports = class Favorite extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -35,7 +35,7 @@ class Favorite extends Command {
    * @param {Object} options.guild - guild data
    * @return {Promise<Message>}
    */
-  async launch(message, query, {guild, user}) {
+  async launch(message, query, {guild, userPlayer: user, guildPlayer}) {
     const player = new (require('./play'))(this.client);
     await player.initQueue(this.client.music, message.guild.id);
     switch (query.shift()) {
@@ -65,14 +65,14 @@ class Favorite extends Command {
         };
         if (!user.musicFavorite) user.musicFavorite = {};
         if (!user.musicFavorite[query.join(' ')]) {
-          user.musicFavorite[query.join(' ')] = guild.player_history;
-          await this.client.updateUser(message.author, {
+          user.musicFavorite[query.join(' ')] = guildPlayer.player_history;
+          await this.client.updatePlayerUser(message.author, {
             musicFavorite: user.musicFavorite,
           });
-          user = await this.client.getUser(message.author);
+          user = await this.client.getPlayerUser(message.author);
           message.channel.send({
             embed: {
-              color: '#2F3136',
+              color: guild.color,
               title: language(guild.lg, 'command_favorite_save_embed_title'),
               description: 'arguments: `save`, `play`, `vue`, `delete`\n\n'+
                `${Object.keys(user.musicFavorite).map((v, i) =>
@@ -107,7 +107,7 @@ class Favorite extends Command {
         };
         return message.channel.send({
           embed: {
-            color: '#2F3136',
+            color: guild.color,
             title: `${Object.keys(user.musicFavorite)[index-1]} playlist`,
             description: `${
               user.musicFavorite[Object.keys(user.musicFavorite)[index-1]]
@@ -130,13 +130,13 @@ class Favorite extends Command {
         };
         delete user.musicFavorite[
             Object.keys(user.musicFavorite)[query.join('')-1]];
-        await this.client.updateUser(message.author, {
+        await this.client.updatePlayerUser(message.author, {
           musicFavorite: user.musicFavorite,
         });
-        user = await this.client.getUser(message.author);
+        user = await this.client.getPlayerUser(message.author);
         message.channel.send({
           embed: {
-            color: '#2F3136',
+            color: guild.color,
             title: language(guild.lg, 'command_favorite_save_embed_title'),
             description: 'arguments: `save`, `play`, `vue`, `delete`\n\n'+
                `${Object.keys(user.musicFavorite).map((v, i) =>
@@ -165,13 +165,13 @@ class Favorite extends Command {
               await message.member.voice.channel.join();
           };
         };
-        player.play(message, guild);
+        player.play(message, guildPlayer, guild);
         break;
       default:
         if (!user.musicFavorite || Object.keys(user.musicFavorite) < 1) {
           message.channel.send({
             embed: {
-              color: '#2F3136',
+              color: guild.color,
               title: language(guild.lg, 'command_favorite_noFavorite'),
               description: 'arguments: `save`, `play`, `vue`, `delete`',
             },
@@ -179,7 +179,7 @@ class Favorite extends Command {
         } else {
           message.channel.send({
             embed: {
-              color: '#2F3136',
+              color: guild.color,
               title: language(guild.lg, 'command_favorite_default_embed_title'),
               description: 'arguments: `save`, `play`, `vue`, `delete`\n\n'+
                `${Object.keys(user.musicFavorite).map((v, i) =>
@@ -191,5 +191,3 @@ class Favorite extends Command {
     }
   };
 };
-
-module.exports = Favorite;

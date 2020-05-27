@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Command class
  */
-class Pause extends Command {
+module.exports = class Pause extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -58,5 +58,3 @@ class Pause extends Command {
     this.client.music[message.guild.id].isPlaying = false;
   };
 };
-
-module.exports = Pause;

@@ -5,7 +5,7 @@ const language = require('../../i18n');
 /**
  * Command class
  */
-class Purge extends Command {
+module.exports = class Purge extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class Purge extends Command {
         });
   };
 };
-
-module.exports = Purge;

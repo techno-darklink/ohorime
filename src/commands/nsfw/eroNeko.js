@@ -6,7 +6,7 @@ const {nsfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class EroNeko extends Command {
+module.exports = class EroNeko extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class EroNeko extends Command {
     });
   };
 };
-
-module.exports = EroNeko;

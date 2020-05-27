@@ -6,7 +6,7 @@ const {sfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Avatar extends Command {
+module.exports = class Avatar extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class Avatar extends Command {
     });
   };
 };
-
-module.exports = Avatar;

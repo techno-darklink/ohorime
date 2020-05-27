@@ -5,7 +5,7 @@ const {sfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Why extends Command {
+module.exports = class Why extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -32,5 +32,3 @@ class Why extends Command {
         .catch(console.error);
   };
 };
-
-module.exports = Why;

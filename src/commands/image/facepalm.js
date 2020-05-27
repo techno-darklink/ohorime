@@ -9,7 +9,7 @@ const arisia = new (require('node-arisia'))({
 /**
  * Command class
  */
-class Facepalm extends Command {
+module.exports = class Facepalm extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -67,5 +67,3 @@ class Facepalm extends Command {
     });
   };
 };
-
-module.exports = Facepalm;

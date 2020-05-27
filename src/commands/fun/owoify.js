@@ -6,7 +6,7 @@ const {sfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Owoify extends Command {
+module.exports = class Owoify extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -42,5 +42,3 @@ class Owoify extends Command {
         .catch(console.error);
   };
 };
-
-module.exports = Owoify;

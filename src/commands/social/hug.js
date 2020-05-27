@@ -6,7 +6,7 @@ const {sfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Hug extends Command {
+module.exports = class Hug extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -65,5 +65,3 @@ class Hug extends Command {
     });
   };
 };
-
-module.exports = Hug;

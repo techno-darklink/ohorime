@@ -6,7 +6,7 @@ const moment = require('moment');
 /**
  * Command class
  */
-class Nowplaying extends Command {
+module.exports = class Nowplaying extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -59,7 +59,7 @@ class Nowplaying extends Command {
         progressBar[calcul] = '🔘';
         message.channel.send({
           embed: {
-            color: '#2F3136',
+            color: guild.color,
             title: language(guild.lg, 'command_music_queue'),
             // eslint-disable-next-line max-len
             description: `[${
@@ -84,7 +84,7 @@ class Nowplaying extends Command {
       case 'jpop':
         message.channel.send({
           embed: {
-            color: '#2F3136',
+            color: guild.color,
             title: language(guild.lg, 'command_music_queue'),
             // eslint-disable-next-line max-len
             description: `[Jpop] ${this.client.jpop.data.song.title}${this.client.jpop.data.song.albums.length > 0 ?
@@ -107,7 +107,7 @@ class Nowplaying extends Command {
       case 'kpop':
         message.channel.send({
           embed: {
-            color: '#2F3136',
+            color: guild.color,
             title: language(guild.lg, 'command_music_queue'),
             // eslint-disable-next-line max-len
             description: `[Kpop] ${this.client.kpop.data.song.title}${this.client.kpop.data.song.albums.length > 0 ?
@@ -144,5 +144,3 @@ class Nowplaying extends Command {
     };
   };
 };
-
-module.exports = Nowplaying;

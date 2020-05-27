@@ -25,7 +25,7 @@ function calculatepoint(messages) {
 /**
  * Command class
  */
-class GlobalRank extends Command {
+module.exports = class GlobalRank extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -68,9 +68,11 @@ class GlobalRank extends Command {
         message.member;
     const name = member.displayName.length > 20 ?
       member.displayName.substring(0, 17) + '...' : member.displayName;
-
-    const point = calculatepoint(user.messageCount);
-
+      
+    const userLeveling = this.client.getLevelingUser(message.author);
+    
+    const point = calculatepoint(userLeveling.messageCount);
+    
     const avatar = await loadImage(member.user.displayAvatarURL({ format: 'jpg' }));
     const background = await loadImage(`https://cdn.ohori.me/store/${user.banner.id}.${
       user.banner.extension.includes('png') ?
@@ -110,5 +112,3 @@ class GlobalRank extends Command {
     await message.channel.send({files: [attachment]});
   };
 };
-
-module.exports = GlobalRank;

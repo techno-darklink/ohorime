@@ -6,7 +6,7 @@ const {sfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-class Foxgirl extends Command {
+module.exports = class Foxgirl extends Command {
   /**
    * @param {Client} client - Client
    */
@@ -46,5 +46,3 @@ class Foxgirl extends Command {
     });
   };
 };
-
-module.exports = Foxgirl;

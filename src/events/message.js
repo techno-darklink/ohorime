@@ -1,22 +1,35 @@
 'use strict';
-
 const language = require('./../i18n');
 const base64 = require('./../plugin/base64');
+const event = require('./../plugin/Event');
 
 /**
  * Event Message
  */
-class Message {
+module.exports = class Message extends event {
+  /**
+   * @param {Client} client - Client
+   */
+  constructor(client) {
+    super(client, {
+      name: 'message',
+      enable: true,
+      filename: __filename,
+    });
+    this.client = client;
+  };
   /**
    * @param {Message} message - message
    * @return {Promise<Message>}
    */
   async launch(message) {
+    if (!message) return;
     /**
      * Check message type and author bot
      */
     if (message.author.bot || message.system) return false;
-    let guild; let user; let authUser; let authGuild;
+    let guild; let levelingGuild;
+    let user; let levelingUser;
     /**
      * Check message has guild
      */
@@ -24,8 +37,8 @@ class Message {
       /**
        * Get guild
        */
-      guild = await this.getGuild(message.guild);
-      authGuild = authUser = await this.getAuthGuild(message.guild);
+      guild = await this.client.getGuild(message.guild);
+      levelingGuild = await this.client.getLevelingGuild(message.guild);
       /**
        * If guild is null or undefined
        */
@@ -33,77 +46,79 @@ class Message {
         /**
          * Save guild data
          */
-        guild = await this.createGuild({
+        guild = await this.client.createGuild({
           name: message.guild.name,
           id: message.guild.id,
-          prefix: this.config.prefix,
-          color: this.config.color,
-          messageCount: 1,
+          prefix: this.client.config.prefix,
+          color: this.client.config.color,
         });
-      } else {
-        /**
-         * Add message to messageCount
-         */
-        await this.updateGuild(message.guild, {
-          messageCount: guild.messageCount+1,
+        await this.client.createAuthGuild({
+          id: message.guild.id,
+          // eslint-disable-next-line max-len
+          token: `${base64(message.guild.id)}.${base64(process.pid)}.${base64(Date.now())}`,
         });
       };
-    };
-    if (!authGuild) {
-      authGuild = await this.createAuthGuild({
-        id: message.guild.id,
-        // eslint-disable-next-line max-len
-        token: `${base64(message.guild.id)}.${base64(process.pid)}.${base64(Date.now())}`,
-      });
-    };
-    /**
+      if (!levelingGuild) {
+        levelingGuild = await this.client.createLevelingGuild({
+          id: message.guild.id,
+          messageCount: 0,
+        });
+      };
+      /**
      * guild daily activity
      */
-    if (!guild.dailyActivity || guild.dailyActivity.length === 0) {
-      guild.dailyActivity = [];
-      guild.dailyActivity.push({
-        day: new Date().getDate(),
-        month: new Date().getMonth(),
-        year: new Date().getFullYear(),
-        messages: 1,
-      });
-    } else if (new Date(
-        guild.dailyActivity[guild.dailyActivity.length - 1].year,
-        guild.dailyActivity[guild.dailyActivity.length - 1].month,
-        guild.dailyActivity[guild.dailyActivity.length - 1].day,
-    ).toString() !== new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate()).toString()
-    ) {
-      guild.dailyActivity.push({
-        day: new Date().getDate(),
-        month: new Date().getMonth(),
-        year: new Date().getFullYear(),
-        messages: 1,
-      });
-    } else {
-      guild.dailyActivity[guild.dailyActivity.length - 1].messages++;
-    };
-    /**
+      if (!levelingGuild.dailyActivity ||
+        levelingGuild.dailyActivity.length === 0) {
+        levelingGuild.dailyActivity = [];
+        levelingGuild.dailyActivity.push({
+          day: new Date().getDate(),
+          month: new Date().getMonth(),
+          year: new Date().getFullYear(),
+          messages: 1,
+        });
+      } else if (new Date(
+          levelingGuild.dailyActivity[
+              levelingGuild.dailyActivity.length - 1].year,
+          levelingGuild.dailyActivity[
+              levelingGuild.dailyActivity.length - 1].month,
+          levelingGuild.dailyActivity[
+              levelingGuild.dailyActivity.length - 1].day,
+      ).toString() !== new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          new Date().getDate()).toString()
+      ) {
+        levelingGuild.dailyActivity.push({
+          day: new Date().getDate(),
+          month: new Date().getMonth(),
+          year: new Date().getFullYear(),
+          messages: 1,
+        });
+      } else {
+        levelingGuild.dailyActivity[
+            levelingGuild.dailyActivity.length - 1].messages++;
+      };
+      /**
      * Check lenght of dailyActivity
      */
-    if (guild.dailyActivity.length > 124) {
-      dailyActivity = dailyActivity.slice(guild.dailyActivity.length-124,
-          guild.dailyActivity.length);
-    };
-    /**
+      if (levelingGuild.dailyActivity.length > 124) {
+        levelingGuild.dailyActivity = levelingGuild.dailyActivity
+            .slice(levelingGuild.dailyActivity.length-124,
+                levelingGuild.dailyActivity.length);
+      };
+      /**
      * Update guild data
      */
-    await this.updateGuild(message.guild, {
-      messageCount: guild.messageCount+1,
-      dailyActivity: guild.dailyActivity,
-    });
+      await this.client.updateLevelingGuild(message.guild, {
+        messageCount: levelingGuild.messageCount+1,
+        dailyActivity: levelingGuild.dailyActivity,
+      });
+    };
     /**
      * Get user data
      */
-    user = await this.getUser(message.author);
-    authUser = await this.getAuthUser(message.author);
+    user = await this.client.getUser(message.author);
+    levelingUser = await this.client.getLevelingUser(message.author);
     /**
      * If user is null or undefined
      */
@@ -111,66 +126,69 @@ class Message {
       /**
        * Save user data
        */
-      user = await this.createUser({
+      user = await this.client.createUser({
         name: message.author.username,
         id: message.author.id,
       });
-      authUser = await this.createAuthUser({
+      await this.client.createAuthUser({
         id: message.author.id,
         // eslint-disable-next-line max-len
         token: `${base64(message.author.id)}.${base64(process.pid)}.${base64(Date.now())}`,
       });
     };
 
-    if (!authUser) {
-      authUser = await this.createAuthUser({
+    if (!levelingUser) {
+      levelingUser = await this.client.createLevelingUser({
         id: message.author.id,
         // eslint-disable-next-line max-len
-        token: `${base64(message.author.id)}.${base64(process.pid)}.${base64(Date.now())}`,
+        messageCount: 0,
       });
     };
     /**
      * User daily activity
      */
-    if (!user.dailyActivity || user.dailyActivity.length === 0) {
-      user.dailyActivity = [];
-      user.dailyActivity.push({
+    if (!levelingUser.dailyActivity ||
+        levelingUser.dailyActivity.length === 0) {
+      levelingUser.dailyActivity = [];
+      levelingUser.dailyActivity.push({
         day: new Date().getDate(),
         month: new Date().getMonth(),
         year: new Date().getFullYear(),
         messages: 1,
       });
     } else if (new Date(
-        user.dailyActivity[user.dailyActivity.length - 1].year,
-        user.dailyActivity[user.dailyActivity.length - 1].month,
-        user.dailyActivity[user.dailyActivity.length - 1].day,
+        levelingUser.dailyActivity[levelingUser.dailyActivity.length - 1].year,
+        levelingUser.dailyActivity[levelingUser.dailyActivity.length - 1].month,
+        levelingUser.dailyActivity[levelingUser.dailyActivity.length - 1].day,
     ).toString() !== new Date(
         new Date().getFullYear(),
         new Date().getMonth(),
         new Date().getDate()).toString()
     ) {
-      user.dailyActivity.push({
+      levelingUser.dailyActivity.push({
         day: new Date().getDate(),
         month: new Date().getMonth(),
         year: new Date().getFullYear(),
         messages: 1,
       });
     } else {
-      user.dailyActivity[user.dailyActivity.length - 1].messages++;
+      levelingUser.dailyActivity[
+          levelingUser.dailyActivity.length - 1].messages++;
     };
     /**
      * Check lenght of dailyActivity
      */
-    if (user.dailyActivity.length > 124) {
-      dailyActivity = dailyActivity.slice(user.dailyActivity.length-124,
-          user.dailyActivity.length);
+    if (levelingUser.dailyActivity.length > 124) {
+      levelingUser.dailyActivity =
+        levelingUser.dailyActivity.slice(levelingUser.dailyActivity.length-124,
+            levelingUser.dailyActivity.length);
     };
     /**
      * Update user data
      */
-    await this.updateUser(message.author, {
-      messageCount: user.messageCount+1,
-      dailyActivity: user.dailyActivity,
+    await this.client.updateLevelingUser(message.author, {
+      messageCount: levelingUser.messageCount+1,
+      dailyActivity: levelingUser.dailyActivity,
     });
     /**
      * If guild is null or undefined
@@ -181,7 +199,7 @@ class Message {
        */
       guild = {
         lg: 'en',
-        color: this.config.color,
+        color: this.client.config.color,
       };
     };
     /**
@@ -193,12 +211,12 @@ class Message {
       query = message.content
           .slice(guild.prefix.length).trim().split(/ +/g);
     } else if (message.content.trim().toLowerCase()
-        .startsWith(this.user.username.trim().toLowerCase())) {
+        .startsWith(this.client.user.username.trim().toLowerCase())) {
       query = message.content
-          .slice(this.user.username.length).trim().split(/ +/g);
-    } else if (message.content.trim().startsWith(`<@${this.id}>`)) {
+          .slice(this.client.user.username.length).trim().split(/ +/g);
+    } else if (message.content.trim().startsWith(this.client.user.toString())) {
       query = message.content.trim()
-          .slice(this.id + 3).trim().split(/ +/g);
+          .slice(this.client.user.toString()).trim().split(/ +/g);
       query.shift();
     } else return;
     /**
@@ -217,12 +235,13 @@ class Message {
     /**
      * check if this command exist
      */
-    if (!this.commands.has(command) && !this.aliases.has(command)) return;
+    if (!this.client.commands.has(command) &&
+      !this.client.aliases.has(command)) return;
     /**
      * Get command
      */
-    const cmd = this.commands.get(command) ||
-      this.commands.get(this.aliases.get(command));
+    const cmd = this.client.commands.get(command) ||
+      this.client.commands.get(this.client.aliases.get(command));
     /**
      * Check bot permisisons
      */
@@ -262,14 +281,24 @@ class Message {
       !message.guild) {
       return message.reply(language(guild.lg, 'command_dm_not_authorized'));
     };
+    let guildPlayer; let userPlayer;
+    if (cmd.help.category === 'music') {
+      guildPlayer = await this.client.getPlayerGuild(message.guild);
+      if (!guildPlayer) {
+        guildPlayer = await this.client.createPlayerGuild(message.guild);
+      };
+      // eslint-disable-next-line no-unused-vars
+      userPlayer = await this.client.getPlayerUser(message.author);
+      if (!userPlayer) {
+        userPlayer = await this.client.createPlayerUser(message.author);
+      };
+    };
     /**
      * Check if command is enable
      */
     if (!cmd.conf.enable && !cmd.bypass) {
       return message.reply(language(guild.lg, 'command_disable'));
     };
-    cmd.launch(message, query, {user, guild});
+    cmd.launch(message, query, {user, guild, guildPlayer, userPlayer});
   };
 };
-
-module.exports = Message;
