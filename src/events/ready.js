@@ -1,6 +1,6 @@
 'use strict';
 const WebSocket = require('ws');
-const {Guild} = require('./../database/lib');
+const {LevelingGuild} = require('./../database/lib');
 const event = require('./../plugin/Event');
 
 /**
@@ -161,7 +161,7 @@ module.exports = class Ready extends event {
           heartbeat: 15000,
         }}));
         // MESSAGE EXCHANGE
-        const allguild = await Guild.find();
+        const allguild = await LevelingGuild.find();
         const result = allguild.map((guild) => guild.messageCount);
         const reducer = (accumulator, currentValue) =>
           accumulator + currentValue;
@@ -182,7 +182,7 @@ module.exports = class Ready extends event {
         // MEMBER EXCHANGE
         ws.send(JSON.stringify({op: 1, d: {
           // eslint-disable-next-line max-len
-          memberCount: await this.client.shard.broadcastEval('this.client.guilds.cache.reduce((prev, guild) => prev + guild.memberCount, 0)')
+          memberCount: await this.client.shard.broadcastEval('this.guilds.cache.reduce((prev, guild) => prev + guild.memberCount, 0)')
               .then((results) =>
                 results.reduce((prev, memberCount) => prev + memberCount, 0),
               ),
@@ -191,11 +191,11 @@ module.exports = class Ready extends event {
         ws.send(JSON.stringify({op: 1, d: {
           shards: await this.client.shard.broadcastEval(`
             const d = {
-              ping: this.client.ws.ping,
-              guilds: this.client.guilds.cache.size,
-              users: this.client.users.cache.size,
-              gateway: this.client.ws.gateway,
-              status: this.client.ws.status,
+              ping: this.ws.ping,
+              guilds: this.guilds.cache.size,
+              users: this.users.cache.size,
+              gateway: this.ws.gateway,
+              status: this.ws.status,
               memoryUsage: process.memoryUsage(),
             };
             d;
@@ -210,11 +210,11 @@ module.exports = class Ready extends event {
           ws.send(JSON.stringify({op: 1, d: {
             shards: await this.client.shard.broadcastEval(`
               const d = {
-                ping: this.client.ws.ping,
-                guilds: this.client.guilds.cache.size,
-                users: this.client.users.cache.size,
-                gateway: this.client.ws.gateway,
-                status: this.client.ws.status,
+                ping: this.ws.ping,
+                guilds: this.guilds.cache.size,
+                users: this.users.cache.size,
+                gateway: this.ws.gateway,
+                status: this.ws.status,
                 memoryUsage: process.memoryUsage(),
               };
               d;

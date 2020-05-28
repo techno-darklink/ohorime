@@ -2,12 +2,24 @@
 'use strict';
 const express = require('express');
 const app = express();
-const {User, AuthUser, Guild, AuthGuild} = require('./../database/lib');
+const {
+  User,
+  AuthUser,
+  Guild,
+  AuthGuild,
+  LevelingGuild,
+  LevelingUser,
+  PlayerGuild,
+  PlayerUser
+} = require('./../database/lib');
 const axios = require('axios');
 const base64 = require('./../plugin/base64');
 const language = require('./../i18n');
+// const DBL = require('dblapi.js');
 
 module.exports = function(client) {
+  //const dbl = new DBL(, client);
+
   client.site = require('http').createServer(app)
       .listen(8030, 'localhost', () =>
         console.log(`App listening on 8030`));
@@ -46,6 +58,12 @@ module.exports = function(client) {
     return res.status(202).json(cmd);
   });
 
+  app.get('/i18n/:lg/:query', (req, res) => {
+    return res.status(202).send(language(req.params.lg, req.params.query));
+  });
+
+  /** GUILDS ENDPOINTS */
+
   app.get('/servers', async (req, res) => {
     return res.status(202).json(await client.shard.fetchClientValues('guilds.cache'));
   });
@@ -60,11 +78,25 @@ module.exports = function(client) {
     return res.status(202).json(guild);
   });
 
-  app.post('/guild/purchase', async (req, res) => {
-    const guild = await Guild.findOne({id: req.body.id});
+  app.get('/guild/:id/leveling', async (req, res) => {
+    const guild = await LevelingGuild.findOne({id: req.params.id});
+    if (!guild) return res.status(404).json({error: true, message: 'guild not found'});
+    return res.status(202).json(guild);
+  });
+
+  app.get('/guild/:id/player', async (req, res) => {
+    const guild = await PlayerGuild.findOne({id: req.params.id});
+    if (!guild) return res.status(404).json({error: true, message: 'guild not found'});
+    return res.status(202).json(guild);
+  });
+
+
+  app.post('/guild/:id/purchase', async (req, res) => {
+    const guild = await Guild.findOne({id: req.params.id});
+    const user = await User.findOne({id: req.body.user})
     if (!guild) return res.status(404).json({error: true, message: 'guild not found'});
     if ((req.headers.authorization !== client.config.authorization)
-      && (req.headers.authorization !== await AuthGuild.findOne({id: req.body.id}).token)) return res.status(403).json({error: true, message: 'authorization refused'});
+      && (req.headers.authorization !== (await AuthGuild.findOne({id: req.params.id})).token)) return res.status(403).json({error: true, message: 'authorization refused'});
     let store = await axios({url: 'https://cdn.ohori.me/store.json', method: 'GET', headers: {'Content-Type': 'application/json'}})
       .then(response => response.data).catch(e => e);
     if (!store) return res.status(404).json({error: true, message: 'store not found'});
@@ -76,19 +108,22 @@ module.exports = function(client) {
     if (!serialize.some(v => v.id === req.body.item)) return res.status(404).json({error: true, message: 'item not found'});
     const item = serialize.find(v => v.id === req.body.item);
     if (guild.items.some(v => v.id === item.id)) return res.status(400).json({error: true, message: 'guild has already this item'});
-    if (guild.coins < item.price) return res.status(400).json({error: true, message: 'insufficient balance'});
+    if (user.coins < item.price) return res.status(400).json({error: true, message: 'insufficient balance'});
     guild.items.push(item);
-    return res.status(202).json(await client.updateGuild(guild, {
+    const d = await client.updateUser(user, {
       coins: guild.coins - item.price,
+    }).then(() => new Object({error: false, message: 'OK'})).catch((e) => new Object({error: true, message: e}));
+    if (d.error) return res.status(400).json(d);
+    return res.status(202).json(await client.updateGuild(guild, {
       items: guild.items,
-    }).then(() => {return {error: false, message: 'OK'}}).catch((e) => {return {error: true, message: e.message}}));
+    }).then(() => new Object({error: false, message: 'OK'})).catch((e) => new Object({error: true, message: e.message})));
   });
 
-  app.post('/guild/setbanner', async (req, res) => {
-    const guild = await Guild.findOne({id: req.body.id});
+  app.post('/guild/:id/setbanner', async (req, res) => {
+    const guild = await Guild.findOne({id: req.params.id});
     if (!guild) return res.status(404).json({error: true, message: 'guild not found'});
     if ((req.headers.authorization !== client.config.authorization)
-      && (req.headers.authorization !== await AuthGuild.findOne({id: req.body.id}).token)) return res.status(403).json({error: true, message: 'authorization refused'});
+      && (req.headers.authorization !== (await AuthGuild.findOne({id: req.params.id})).token)) return res.status(403).json({error: true, message: 'authorization refused'});
     if (!guild.items.some(v => v.id === req.body.item)) return res.status(404).json({error: true, message: 'item not found'});
     const item = guild.items.find(v => v.id === req.body.item);
     return res.status(202).json(await client.updateGuild(guild, {
@@ -119,11 +154,7 @@ module.exports = function(client) {
       }).then(() => {return {error: false, message: 'OK', token: `${base64(req.body.id)}.${base64(process.pid)}.${base64(Date.now())}`}}).catch((e) => {return {error: true, message: e.message}}));
   });
 
-  
-  app.get('/i18n/:lg/:query', (req, res) => {
-    return res.status(202).send(language(req.params.lg, req.params.query));
-  });
-
+  /** USERS ENDPOINT */
   app.get('/users', async (req, res) => {
     return res.status(202).json(await User.find());
   });
@@ -134,11 +165,11 @@ module.exports = function(client) {
     return res.status(202).json(users);
   });
 
-  app.post('/user/purchase', async (req, res) => {
-    const user = await User.findOne({id: req.body.id});
+  app.post('/user/:id/purchase', async (req, res) => {
+    const user = await User.findOne({id: req.params.id});
     if (!user) return res.status(404).json({error: true, message: 'user not found'});
-    if ((req.headers.authorization !== client.config.authorization)
-      && (req.headers.authorization !== await AuthUser.findOne({id: req.body.id}).token)) return res.status(403).json({error: true, message: 'authorization refused'});
+    if (req.headers.authorization !== client.config.authorization
+      && req.headers.authorization !== (await AuthUser.findOne({id: req.params.id})).token) return res.status(403).json({error: true, message: 'authorization refused'});
     let store = await axios({url: 'https://cdn.ohori.me/store.json', method: 'GET', headers: {'Content-Type': 'application/json'}})
       .then(response => response.data).catch(e => e);
     if (!store) return res.status(404).json({error: true, message: 'store not found'});
@@ -158,11 +189,11 @@ module.exports = function(client) {
     }).then(() => {return {error: false, message: 'OK'}}).catch((e) => {return {error: true, message: e.message}}));
   });
 
-  app.post('/user/setbanner', async (req, res) => {
-    const user = await User.findOne({id: req.body.id});
+  app.post('/user/:id/setbanner', async (req, res) => {
+    const user = await User.findOne({id: req.params.id});
     if (!user) return res.status(404).json({error: true, message: 'user not found'});
     if ((req.headers.authorization !== client.config.authorization)
-      && (req.headers.authorization !== await AuthUser.findOne({id: req.body.id}).token)) return res.status(403).json({error: true, message: 'authorization refused'});
+      && (req.headers.authorization !== (await AuthUser.findOne({id: req.params.id})).token)) return res.status(403).json({error: true, message: 'authorization refused'});
     if (!user.items.some(v => v.id === req.body.item)) return res.status(404).json({error: true, message: 'item not found'});
     const item = user.items.find(v => v.id === req.body.item);
     return res.status(202).json(await client.updateUser(user, {
@@ -192,4 +223,7 @@ module.exports = function(client) {
         token: `${base64(req.body.id)}.${base64(process.pid)}.${base64(Date.now())}`,
       }).then(() => {return {error: false, message: 'OK', token: `${base64(req.body.id)}.${base64(process.pid)}.${base64(Date.now())}`}}).catch((e) => {return {error: true, message: e.message}}));
   });
+
+  /** WEBHOOK */
+  /** SOON */
 };

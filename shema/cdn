@@ -1,0 +1,36 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name cdn.ohori.me;
+    location / {
+        proxy_pass http://localhost:3005/;
+    }
+    # BEGIN W3TC Browser Cache
+    gzip on;
+    gzip_types text/css text/x-component application/x-javascript application/javascript text/javascrip$;
+    location ~ \.(css|htc|less|js|js2|js3|js4)$ {
+        expires 31536000s;
+        add_header Pragma "public";
+        add_header Cache-Control "max-age=31536000, public";
+        add_header X-Powered-By "W3 Total Cache/0.9.4.1";
+    }
+    location ~ \.(html|htm|rtf|rtx|svg|svgz|txt|xsd|xsl)$ {
+        expires 3600s;
+        add_header Pragma "public";
+        add_header Cache-Control "max-age=3600, public";
+        add_header X-Powered-By "W3 Total Cache/0.9.4.1";
+    }
+    location ~ \.(xml)$ {
+        expires 10s;
+        add_header Pragma "public";
+        add_header Cache-Control "max-age=10, public";
+        add_header X-Powered-By "W3 Total Cache/0.9.4.1";
+    }
+    location ~ \.(asf|asx|wax|wmv|wmx|avi|bmp|class|divx|doc|docx|eot|exe|gif|gz|gzip|ico|jpg|jpeg|jpe|webp|$ {
+        expires 31536000s;
+        add_header Pragma "public";
+        add_header Cache-Control "max-age=31536000, public";
+        add_header X-Powered-By "W3 Total Cache/0.9.4.1";
+    }
+    # END W3TC Browser Cache
+}

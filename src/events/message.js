@@ -296,7 +296,15 @@ module.exports = class Message extends event {
     /**
      * Check if command is enable
      */
-    if (!cmd.conf.enable && !cmd.bypass) {
+    if (!cmd.conf.enable && !cmd.bypass &&
+        message.author.id !== this.client.appInfo.owner.id) {
+      return message.reply(language(guild.lg, 'command_disable'));
+    };
+    /**
+     * Check command is for developer
+     */
+    if (cmd.help.category === 'developer' &&
+        message.author.id !== this.client.appInfo.owner.id) {
       return message.reply(language(guild.lg, 'command_disable'));
     };
     cmd.launch(message, query, {user, guild, guildPlayer, userPlayer});

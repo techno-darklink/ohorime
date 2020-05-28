@@ -8,7 +8,7 @@ const OhorimeClient = require('./OhorimeClient');
 const client = new OhorimeClient({
   http: {
     api: 'https://discord.com/api',
-    cdn: 'https://cdn.discord.com',
+    cdn: 'https://cdn.discordapp.com',
   },
   fetchAllMembers: true,
   ws: {

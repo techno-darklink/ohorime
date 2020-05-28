@@ -14,13 +14,6 @@ module.exports = (client) => {
     // eslint-disable-next-line guard-for-in
     for (const key in settings) {
       if (data[key] !== settings[key]) data[key] = settings[key];
-      if (key === 'messageCount') {
-        const allguild = await Guild.find();
-        const result = allguild.map((guild) => guild.messageCount);
-        const reducer = (accumulator, currentValue) =>
-          accumulator + currentValue;
-        client.coreExchange.emit('messageCount', result.reduce(reducer));
-      };
     };
     return data.updateOne(settings);
   };

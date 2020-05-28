@@ -69,8 +69,7 @@ module.exports = class GlobalRank extends Command {
     const name = member.displayName.length > 20 ?
       member.displayName.substring(0, 17) + '...' : member.displayName;
       
-    const userLeveling = this.client.getLevelingUser(message.author);
-    
+    const userLeveling = await this.client.getLevelingUser(message.author);
     const point = calculatepoint(userLeveling.messageCount);
     
     const avatar = await loadImage(member.user.displayAvatarURL({ format: 'jpg' }));

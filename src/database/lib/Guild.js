@@ -12,10 +12,13 @@ const guildShema = {
   banner: {
     'type': Object,
     'default': {
-      id: 0,
+      id: '001',
       extension: ['webp', 'png'],
     },
   },
+  items: {'type': Array, 'default': [
+    {id: '001', extension: ['webp', 'png']},
+  ]},
   welcome_banner: String,
   welcome_channel: String,
   welvome_active: {
