@@ -87,7 +87,7 @@ module.exports = class Ready extends event {
      */
     this.client.user.setPresence({
       activity: {
-        name: `a!help | https://ohori.me`,
+        name: `${this.client.config.prefix}help | https://ohori.me`,
         type: 'WATCHING',
         application: {
           id: '704867756595478549',
