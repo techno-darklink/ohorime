@@ -14,6 +14,7 @@ const levelingGuildShema = {
         year: new Date().getFullYear(), messages: 0},
     ],
   },
+  users: Array,
 };
 
 module.exports = mongoose.model('LevelingGuild', levelingGuildShema);

@@ -62,6 +62,7 @@ module.exports = class Message extends event {
         levelingGuild = await this.client.createLevelingGuild({
           id: message.guild.id,
           messageCount: 0,
+          users: [{id: message.author.id, messageCount: 0}],
         });
       };
       /**
@@ -106,12 +107,23 @@ module.exports = class Message extends event {
             .slice(levelingGuild.dailyActivity.length-124,
                 levelingGuild.dailyActivity.length);
       };
+      const u = levelingGuild.users
+          .findIndex((u) => u.id === message.author.id);
+      if (u !== -1) {
+        levelingGuild.users[u].messageCount++;
+      } else {
+        levelingGuild.users.push({
+          id: message.author.id,
+          messageCount: 1,
+        });
+      };
       /**
-     * Update guild data
-     */
+      * Update guild data
+      */
       await this.client.updateLevelingGuild(message.guild, {
         messageCount: levelingGuild.messageCount+1,
         dailyActivity: levelingGuild.dailyActivity,
+        users: levelingGuild.users,
       });
     };
     /**
@@ -307,6 +319,13 @@ module.exports = class Message extends event {
         message.author.id !== this.client.appInfo.owner.id) {
       return message.reply(language(guild.lg, 'command_disable'));
     };
-    cmd.launch(message, query, {user, guild, guildPlayer, userPlayer});
+    cmd.launch(message, query, {
+      user,
+      guild,
+      guildPlayer,
+      userPlayer,
+      levelingUser,
+      levelingGuild,
+    });
   };
 };

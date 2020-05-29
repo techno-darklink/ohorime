@@ -2,9 +2,12 @@
 const {readdirSync} = require('fs');
 const {DISCORD_TOKEN} = require('./../configuration');
 const klaw = require('klaw');
-const {parse, sep} = require('path');
 const OhorimeClient = require('./OhorimeClient');
+const {parse, sep, resolve} = require('path');
 
+/**
+ * @type {OhorimeClient}
+ */
 const client = new OhorimeClient({
   http: {
     api: 'https://discord.com/api',
@@ -20,14 +23,16 @@ const client = new OhorimeClient({
 });
 require('./database/functions')(client);
 
+/**
+ * @type {Array<string>}
+ */
 const eventFiles = readdirSync('./src/events/');
 
-// eslint-disable-next-line guard-for-in
-for (const file in eventFiles) {
-  client.loadEvent(eventFiles[file]);
+for (const file of eventFiles) {
+  client.loadEvent(file);
 };
 
-klaw('./src/commands').on('data', (item) => {
+klaw(resolve(__dirname, 'commands')).on('data', (item) => {
   const cmdFile = parse(item.path);
   if (!cmdFile.ext || cmdFile.ext !== '.js') return;
   client.loadCommand(
@@ -53,32 +58,20 @@ client.on('error', client.logger.error);
 process.on('uncaughtException', (error) => {
   console.warn(error);
   if (!client) return;
-  const guild = client.guilds.cache.get('612430086624247828');
-  if (!guild) return;
-  const channel = guild.channels.cache.get('707414291355271220');
-  channel.send(error, {code: 'js'});
+  client.errorHook.send(error, {code: 'js'});
 });
 process.on('unhandledRejection', (listener) => {
   console.warn(listener);
   if (!client) return;
-  const guild = client.guilds.cache.get('612430086624247828');
-  if (!guild) return;
-  const channel = guild.channels.cache.get('707414291355271220');
-  channel.send(listener, {code: 'js'});
+  client.errorHook.send(listener, {code: 'js'});
 });
 process.on('rejectionHandled', (listener) => {
   console.warn(listener);
   if (!client) return;
-  const guild = client.guilds.cache.get('612430086624247828');
-  if (!guild) return;
-  const channel = guild.channels.cache.get('707414291355271220');
-  channel.send(listener, {code: 'js'});
+  client.errorHook.send(listener, {code: 'js'});
 });
 process.on('warning', (warning) => {
   console.warn(warning);
   if (!client) return;
-  const guild = client.guilds.cache.get('612430086624247828');
-  if (!guild) return;
-  const channel = guild.channels.cache.get('707414291355271220');
-  channel.send(warning, {code: 'js'});
+  client.errorHook.send(warning, {code: 'js'});
 });

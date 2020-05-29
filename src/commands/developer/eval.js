@@ -1,8 +1,7 @@
 /* eslint-disable */
 'use strict';
 const Command = require('../../plugin/Command');
-const {Guild} = require('./../../database/lib/Guild');
-const {User} = require('./../../database/lib/User');
+const lib = require('./../../database/lib');
 
 /**
  * Clean a code
@@ -43,8 +42,7 @@ module.exports = class Eval extends Command {
    * @param {Message} message - message
    * @param {Array} query - argument
    */
-  async launch(message, query, {user, guild}) {
-    if (message.author.id !== '363603951163015168') return false;
+  async launch(message, query, d) {
     const code = query.join(' ');
     if (!code) return false;
     try {

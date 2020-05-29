@@ -1,5 +1,5 @@
 'use strict';
-const {Client, Collection} = require('discord.js');
+const {Client, Collection, WebhookClient} = require('discord.js');
 const {CONFIG, ANEMY} = require('../configuration');
 const {JpopClient, KpopClient} = require('./client');
 const coreExchange = new (require('./plugin/CoreExchange'))();
@@ -39,6 +39,11 @@ module.exports = class OhorimeClient extends Client {
     this.anemy = new Anemy.Client({
       token: ANEMY.TOKEN,
     });
+    this.initializer = false;
+    this.statusHook = new WebhookClient(
+        this.config.webhook.status.id, this.config.webhook.status.token);
+    this.errorHook = new WebhookClient(
+        this.config.webhook.error.id, this.config.webhook.error.token);
   };
   /**
     * Load events file
@@ -72,5 +77,53 @@ module.exports = class OhorimeClient extends Client {
     } catch (error) {
       console.error(error);
     };
+  };
+  /**
+   * Fetch all users
+   * @return {Promise<Array<Users>>}
+   */
+  get fetchUsers() {
+    return this.shard.broadcastEval('this.users.cache')
+        .then((result) => this.flatDeep(result));
+  };
+  /**
+   * Fetch all guilds
+   * @return {Promise<Array<Guild>>}
+   */
+  get fetchGuilds() {
+    return this.shard.broadcastEval('this.guilds.cache')
+        .then((result) => this.flatDeep(result));
+  };
+  /**
+   * Fetch all emojis
+   * @return {Promise<Array<Emoji>>}
+   */
+  get fetchGuilds() {
+    return this.shard.broadcastEval('this.emojis.cache')
+        .then((result) => this.flatDeep(result));
+  };
+  /**
+   * Fetch all channels
+   * @return {Promise<Array<Channel>>}
+   */
+  get fetchGuilds() {
+    return this.shard.broadcastEval('this.channels.cache')
+        .then((result) => this.flatDeep(result));
+  };
+  /**
+   * Fetch initializer
+   * @return {Promise<Array<Boolean>>}
+   */
+  get fetchInitializer() {
+    return this.shard.broadcastEval('this.initializer')
+        .then((result) => this.flatDeep(result));
+  };
+  /**
+   * @param {Array<any>} arr
+   * @return {Array<any>}
+   */
+  flatDeep(arr) {
+    return arr.reduce((acc, val) =>
+      acc.concat(Array.isArray(val) ? this.flatDeep(val) : val), []);
   };
 };

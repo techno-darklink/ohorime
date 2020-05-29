@@ -106,6 +106,7 @@ module.exports = class MessageReactionRemove extends event {
             description: convert(data[
                 // eslint-disable-next-line max-len
                 this.client.anime[messageReaction.message.guild.id].pagination].description || 'aucune donnée'),
+            url: `https://anemy.fr/anime.php?id=${data[this.client.anime[messageReaction.message.guild.id].pagination].id}`,
             thumbnail: data[this.client.anime[messageReaction.message.guild.id].pagination].affiche ?
                   {url: encodeURI(data[this.client.anime[messageReaction.message.guild.id].pagination].affiche)} :
                   {},
@@ -207,6 +208,9 @@ module.exports = class MessageReactionRemove extends event {
               data[this.client.anime[messageReaction.message.guild.id].pagination].id_page.slice(1, data[this.client.anime[messageReaction.message.guild.id].pagination].id_page.length-1)),
             description: convert(data[
                 this.client.anime[messageReaction.message.guild.id].pagination].biographie || 'aucune donnée'),
+            url: this.client.anime[messageReaction.message.guild.id].type === 'personnage' ?
+              `https://anemy.fr/personnage.php?id=${data[this.client.anime[messageReaction.message.guild.id].pagination].id}` :
+              `https://anemy.fr/staff.php?id=${data[this.client.anime[messageReaction.message.guild.id].pagination].id}`,
             thumbnail: {
               url: data[this.client.anime[messageReaction.message.guild.id].pagination].image ?
                     encodeURI(data[this.client.anime[messageReaction.message.guild.id].pagination].image) :

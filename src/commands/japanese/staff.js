@@ -87,6 +87,7 @@ const {Util} = require('node-anemy');
               data[this.client.anime[message.guild.id].pagination].id_page.slice(1, data[this.client.anime[message.guild.id].pagination].id_page.length-1)),
             description: convert(data[
                   this.client.anime[message.guild.id].pagination].biographie || 'aucune donnée'),
+            url: `https://anemy.fr/staff.php?id=${data[this.client.anime[message.guild.id].pagination].id}`,
             thumbnail: data[this.client.anime[message.guild.id].pagination].image ?
             {url: encodeURI(data[this.client.anime[message.guild.id].pagination].image)} :
             {},

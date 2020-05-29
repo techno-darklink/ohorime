@@ -90,7 +90,6 @@ module.exports = function(client) {
     return res.status(202).json(guild);
   });
 
-
   app.post('/guild/:id/purchase', async (req, res) => {
     const guild = await Guild.findOne({id: req.params.id});
     const user = await User.findOne({id: req.body.user})
@@ -163,6 +162,18 @@ module.exports = function(client) {
     const users = await User.findOne({id: req.params.id});
     if (!users) return res.status(404).json({error: true, message: 'user not found'});
     return res.status(202).json(users);
+  });
+
+  app.get('/user/:id/leveling', async (req, res) => {
+    const user = await LevelingUser.findOne({id: req.params.id});
+    if (!user) return res.status(404).json({error: true, message: 'user not found'});
+    return res.status(202).json(user);
+  });
+
+  app.get('/user/:id/player', async (req, res) => {
+    const user = await PlayerUser.findOne({id: req.params.id});
+    if (!user) return res.status(404).json({error: true, message: 'user not found'});
+    return res.status(202).json(user);
   });
 
   app.post('/user/:id/purchase', async (req, res) => {

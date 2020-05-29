@@ -190,9 +190,9 @@ module.exports = {
     // eslint-disable-next-line max-len
     'command_staff_result_embed_footer': 'Powered by Anemy - page {{index}}',
     'command_watchlist_description': 'Display your watchlist',
-    'command_globalrank_description': 'Display yout global rank card',
-    'command_globaltop_description': 'Send the top 5 xp',
-    'command_globaltop_embed_title': 'Global leaderboard',
+    'command_rank_description': 'Display your rank card',
+    'command_top_description': 'Send the top 5 xp',
+    'command_top_embed_title': 'Global leaderboard',
     'command_upvote_description': 'Upvote an user',
     'command_upvote_wait': 'You must wait {{time}}',
     'command_upvote_userNotFound': 'I can\'t find the user',

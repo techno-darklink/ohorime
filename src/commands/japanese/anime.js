@@ -98,6 +98,7 @@ module.exports = class Anime extends Command {
         data[this.client.anime[message.guild.id].pagination].id, 2000),
       description: convert(data[
             this.client.anime[message.guild.id].pagination].description  || 'aucune donnée'),
+      url: `https://anemy.fr/anime.php?id=${data[this.client.anime[message.guild.id].pagination].id}`,
       thumbnail: data[this.client.anime[message.guild.id].pagination].affiche ?
         { url: encodeURI(data[this.client.anime[message.guild.id].pagination].affiche) } :
         {},

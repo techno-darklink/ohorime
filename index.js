@@ -22,9 +22,6 @@ manager.on('shardCreate', (shard) => {
   shard.on('disconnect', () => {
     console.log(`[shard: ${shard.id}] has been disconnected`);
   });
-  shard.on('message', (message) => {
-    console.log(`[shard: ${shard.id}] message -> ${message}`);
-  });
   shard.on('ready', () => {
     console.log(`[shard: ${shard.id}] has been ready`);
   });
