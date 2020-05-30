@@ -61,7 +61,7 @@ module.exports = class Top extends Command {
       const rawBoard = levelingUser.sort((a, b) =>
         b.messageCount - a.messageCount);
       const embed = {
-        title: language(guild.lg, 'command_top_embed_title'),
+        title: language(guild.lg, 'command_top_embedglobal_title'),
         color: guild.color,
         fields: [],
       };
@@ -88,8 +88,8 @@ module.exports = class Top extends Command {
       const rawBoard = levelingGuild.users.sort((a, b) =>
         b.messageCount - a.messageCount);
       const embed = {
-        title: language(guild.lg, 'command_top_embed_title') +
-        ' ' + message.guild.name,
+        title: language(guild.lg, 'command_top_embed_title')
+            .replace(/{{server}}/gi, message.guild.name),
         color: guild.color,
         fields: [],
       };

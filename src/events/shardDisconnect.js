@@ -19,15 +19,15 @@ module.exports = class ShardDisconnect extends event {
   /**
       * Launch script
       * @param {CloseEvent} event
-      * @param {number} shardID
+      * @param {number} id
       */
-  async launch(event, shardID) {
+  async launch(event, id) {
     if (process.env.NODE_ENV === 'production') {
       this.client.statusHook.send({
         embeds: [{
           description:
               // eslint-disable-next-line max-len
-              `Shard ${shardID+1}/${this.client.shard.count} is disconnect`,
+              `Shard ${id+1}/${this.client.shard.count} is disconnect`,
           color: '#450000',
         }],
       });

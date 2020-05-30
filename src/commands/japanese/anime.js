@@ -79,11 +79,13 @@ module.exports = class Anime extends Command {
         language(guild.lg, 'command_anime_result_any'),
       );
     };
-    this.client.anime[message.guild.id] = {
+    this.client.pagination[message.author.id] = 'anime';
+    this.client.anime[message.author.id] = {
       message: null,
       pagination: 0,
       data,
       type: 'anime',
+      color: guild.color,
     };
     function convert (d) {
       return Util.convertToMarkdown(
@@ -91,90 +93,90 @@ module.exports = class Anime extends Command {
           Util.reduceString(d, 2000)));
     };
     const embed = {
-      color: guild.color,
+      color: this.client.items[message.author.id].color,
       title: convert(
-            data[this.client.anime[message.guild.id].pagination].romaji +
+            data[this.client.anime[message.author.id].pagination].romaji +
         '  -  ID: ' +
-        data[this.client.anime[message.guild.id].pagination].id, 2000),
+        data[this.client.anime[message.author.id].pagination].id, 2000),
       description: convert(data[
-            this.client.anime[message.guild.id].pagination].description  || 'aucune donnée'),
-      url: `https://anemy.fr/anime.php?id=${data[this.client.anime[message.guild.id].pagination].id}`,
-      thumbnail: data[this.client.anime[message.guild.id].pagination].affiche ?
-        { url: encodeURI(data[this.client.anime[message.guild.id].pagination].affiche) } :
+            this.client.anime[message.author.id].pagination].description  || 'aucune donnée'),
+      url: `https://anemy.fr/anime.php?id=${data[this.client.anime[message.author.id].pagination].id}`,
+      thumbnail: data[this.client.anime[message.author.id].pagination].affiche ?
+        { url: encodeURI(data[this.client.anime[message.author.id].pagination].affiche) } :
         {},
-      image: data[this.client.anime[message.guild.id].pagination].image ?
-        { url: encodeURI(data[this.client.anime[message.guild.id].pagination].image) } :
+      image: data[this.client.anime[message.author.id].pagination].image ?
+        { url: encodeURI(data[this.client.anime[message.author.id].pagination].image) } :
         {},
       fields: [
         {
           name: 'episodes',
           value: convert(data[
-              this.client.anime[message.guild.id].pagination].episodes || 'aucune donnée'),
+              this.client.anime[message.author.id].pagination].episodes || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'statut',
           value: convert(data[
-              this.client.anime[message.guild.id].pagination].statut || 'aucune donnée'),
+              this.client.anime[message.author.id].pagination].statut || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'licence',
           value: convert(data[
-              this.client.anime[message.guild.id].pagination].licence || 'aucune donnée'),
+              this.client.anime[message.author.id].pagination].licence || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'saison',
           value: convert(data[
-              this.client.anime[message.guild.id].pagination].saison || 'aucune donnée'),
+              this.client.anime[message.author.id].pagination].saison || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'studio',
           value: convert(data[
-              this.client.anime[message.guild.id].pagination].studio || 'aucune donnée'),
+              this.client.anime[message.author.id].pagination].studio || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'producteur',
           value: convert(data[
-              this.client.anime[message.guild.id].pagination].producteur || 'aucune donnée'),
+              this.client.anime[message.author.id].pagination].producteur || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'source',
           value: convert(data[
-              this.client.anime[message.guild.id].pagination].source || 'aucune donnée'),
+              this.client.anime[message.author.id].pagination].source || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'durée',
           value: convert(data[
-              this.client.anime[message.guild.id].pagination].duree || 'aucune donnée'),
+              this.client.anime[message.author.id].pagination].duree || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'categorie',
           value: convert(data[
-              this.client.anime[message.guild.id].pagination].categorie || 'aucune donnée'),
+              this.client.anime[message.author.id].pagination].categorie || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'format',
           value: convert(data[
-              this.client.anime[message.guild.id].pagination].format || 'aucune donnée'),
+              this.client.anime[message.author.id].pagination].format || 'aucune donnée'),
         },
         {
           name: 'pays',
           value: convert(data[
-              this.client.anime[message.guild.id].pagination].pays || 'aucune donnée'),
+              this.client.anime[message.author.id].pagination].pays || 'aucune donnée'),
           inline: true,
         },
         {
           name: 'adulte',
           value: data[
-              this.client.anime[message.guild.id].pagination].adulte===0?
+              this.client.anime[message.author.id].pagination].adulte===0?
               'Non' : 'Oui',
           inline: true,
         },
@@ -182,16 +184,16 @@ module.exports = class Anime extends Command {
       footer: {
         // eslint-disable-next-line max-len
         text: language(guild.lg, 'command_anime_result_embed_footer')
-            .replace(/{{index}}+/g, `${this.client.anime[message.guild.id].pagination+1}/${data.length}`),
+            .replace(/{{index}}+/g, `${this.client.anime[message.author.id].pagination+1}/${data.length}`),
         icon_url: 'https://gblobscdn.gitbook.com/spaces%2F-M4jTJ1TeTR2aTI4tuTG%2Favatar-1586713303918.png?generation=1586713304401821&alt=media',
       },
     };
-    this.client.anime[message.guild.id].message =
+    this.client.anime[message.author.id].message =
       await message.channel.send({embed});
     if (data.length > 1) {
-      await this.client.anime[message.guild.id].message
+      await this.client.anime[message.author.id].message
           .react('704554846073782362');
-      await this.client.anime[message.guild.id].message
+      await this.client.anime[message.author.id].message
           .react('704554845813866506');
     };
   };

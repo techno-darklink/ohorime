@@ -22,6 +22,7 @@ module.exports = class OhorimeClient extends Client {
     this.mongoose = require('./database/mongoose');
     this.logger = require('./plugin/Logger');
     this.music = {};
+    this.pagination = {};
     this.jpop = {
       broadcast: null,
       dispatcher: null,
@@ -35,6 +36,7 @@ module.exports = class OhorimeClient extends Client {
       data: null,
     };
     this.anime = {};
+    this.items = {};
     this.coreExchange = coreExchange;
     this.anemy = new Anemy.Client({
       token: ANEMY.TOKEN,

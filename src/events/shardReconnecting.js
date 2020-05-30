@@ -18,10 +18,9 @@ module.exports = class ShardReconnecting extends event {
   };
   /**
       * Launch script
-      * @param {CloseEvent} event
       * @param {number} shardID
       */
-  async launch(event, shardID) {
+  async launch(shardID) {
     if (process.env.NODE_ENV === 'production') {
       this.client.statusHook.send({
         embeds: [{

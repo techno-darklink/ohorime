@@ -1,6 +1,6 @@
 'use strict';
 const {readdirSync} = require('fs');
-const {DISCORD_TOKEN} = require('./../configuration');
+const {DISCORD_TOKEN, CONFIG} = require('./../configuration');
 const klaw = require('klaw');
 const OhorimeClient = require('./OhorimeClient');
 const {parse, sep, resolve} = require('path');
@@ -20,6 +20,17 @@ const client = new OhorimeClient({
       'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS'],
   },
   partials: ['MESSAGE', 'REACTION'],
+  presence: {
+    activity: {
+      name: `${CONFIG.prefix}help | https://ohori.me`,
+      type: 'WATCHING',
+      application: {
+        id: '704867756595478549',
+      },
+    },
+    status: 'dnd',
+    afk: false,
+  },
 });
 require('./database/functions')(client);
 

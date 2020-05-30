@@ -34,15 +34,14 @@ module.exports = class Clear extends command {
       };
       const cmd = this.client.commands.get(query.join('')) ||
         this.client.commands.get(this.client.aliases.get(query.join('')));
-      msg.edit(`${cmd.help.name} clearing...`);
       delete require.cache[require.resolve(cmd.conf.filename)];
-      msg.edit(`${cmd.help.name} cleared !`);
+      this.client.loadCommand(cmd.conf.filename);
+      msg.edit(`All task is completed (command ${cmd.help.name}) ✅ :)`);
     } else {
       for (let cmd of this.client.commands) {
         cmd = cmd[1];
         if (!cmd.help) continue;
         if (cmd.help.name === 'clear') {
-          console.log(cmd.help.name);
           continue;
         };
         delete require.cache[require.resolve(cmd.conf.filename)];

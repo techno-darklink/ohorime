@@ -82,20 +82,6 @@ module.exports = class Ready extends event {
       this.client.music[guild.id].broadcast = false;
       broadcastFollow--;
     });
-    /**
-     * Set presence
-     */
-    this.client.user.setPresence({
-      activity: {
-        name: `${this.client.config.prefix}help | https://ohori.me`,
-        type: 'WATCHING',
-        application: {
-          id: '704867756595478549',
-        },
-      },
-      status: 'dnd',
-      afk: false,
-    });
     const timeout = setInterval(async () => {
       if (!(await this.client.fetchInitializer).some((v) => v)) {
         this.client.initializer = true;

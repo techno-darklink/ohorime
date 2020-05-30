@@ -54,20 +54,7 @@ module.exports = class Rank extends Command {
    * @return {Message}
    */
   async launch(message, query, {guild, user, levelingUser, levelingGuild}) {
-    const queryMember = query.join(' ');
-    const member = message.mentions.members.first() ||
-    message.guild.member(
-        message.mentions.users.first(),
-    ) ||
-    message.guild.members.cache.find((member) =>
-      member.id === queryMember) ||
-    message.guild.members.cache.find((member) =>
-      member.displayName === queryMember) ||
-    message.guild.members.cache.find((member) =>
-      member.user.username === queryMember) ||
-    message.guild.members.cache.find((member) =>
-      member.toString() === queryMember) ||
-    message.member;
+    const member = message.member;
     if (query.join('') === 'global') {
       const name = member.displayName.length > 20 ?
         member.displayName.substring(0, 17) + '...' : member.displayName;

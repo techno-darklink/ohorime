@@ -69,54 +69,56 @@ const {Util} = require('node-anemy');
     if (!data || data.length < 1) {
       return message.channel.send(language(guild.lg, 'command_staff_result_any'));
     };
-    this.client.anime[message.guild.id] = {
+    this.client.pagination[message.author.id] = 'anime';
+    this.client.anime[message.author.id] = {
       message: null,
       pagination: 0,
       data,
       type: 'staff',
+      color: guild.color,
     };
-    this.client.anime[message.guild.id].message =
+    this.client.anime[message.author.id].message =
         await message.channel.send({
           embed: {
-            color: guild.color,
-            title: convert(data[this.client.anime[message.guild.id].pagination].prenom +
+            color: this.client.items[message.author.id].color,
+            title: convert(data[this.client.anime[message.author.id].pagination].prenom +
               ' '+
-              data[this.client.anime[message.guild.id].pagination].nom +
+              data[this.client.anime[message.author.id].pagination].nom +
               '  -  ID: ' +
-              data[this.client.anime[message.guild.id].pagination].id + ' · ' +
-              data[this.client.anime[message.guild.id].pagination].id_page.slice(1, data[this.client.anime[message.guild.id].pagination].id_page.length-1)),
+              data[this.client.anime[message.author.id].pagination].id + ' · ' +
+              data[this.client.anime[message.author.id].pagination].id_page.slice(1, data[this.client.anime[message.author.id].pagination].id_page.length-1)),
             description: convert(data[
-                  this.client.anime[message.guild.id].pagination].biographie || 'aucune donnée'),
-            url: `https://anemy.fr/staff.php?id=${data[this.client.anime[message.guild.id].pagination].id}`,
-            thumbnail: data[this.client.anime[message.guild.id].pagination].image ?
-            {url: encodeURI(data[this.client.anime[message.guild.id].pagination].image)} :
+                  this.client.anime[message.author.id].pagination].biographie || 'aucune donnée'),
+            url: `https://anemy.fr/staff.php?id=${data[this.client.anime[message.author.id].pagination].id}`,
+            thumbnail: data[this.client.anime[message.author.id].pagination].image ?
+            {url: encodeURI(data[this.client.anime[message.author.id].pagination].image)} :
             {},
             fields: [
               {
                 name: 'native',
                 value: convert(data[
-                    this.client.anime[message.guild.id].pagination].native || 'aucune donnée'),
+                    this.client.anime[message.author.id].pagination].native || 'aucune donnée'),
                 inline: true,
               },
               {
                 name: 'alternative',
                 value: convert(data[
-                    this.client.anime[message.guild.id].pagination].alternative|| 'aucune donnée'),
+                    this.client.anime[message.author.id].pagination].alternative|| 'aucune donnée'),
                 inline: true,
               },
             ],
             footer: {
               // eslint-disable-next-line max-len
               text: language(guild.lg, 'command_staff_result_embed_footer')
-                .replace(/{{index}}+/g, `${this.client.anime[message.guild.id].pagination+1}/${data.length}`),
+                .replace(/{{index}}+/g, `${this.client.anime[message.author.id].pagination+1}/${data.length}`),
               icon_url: 'https://gblobscdn.gitbook.com/spaces%2F-M4jTJ1TeTR2aTI4tuTG%2Favatar-1586713303918.png?generation=1586713304401821&alt=media',
             },
           },
         }).catch(e => console.log(e, 'embed'));
     if (data.length > 1) {
-      await this.client.anime[message.guild.id].message
+      await this.client.anime[message.author.id].message
           .react('704554846073782362');
-      await this.client.anime[message.guild.id].message
+      await this.client.anime[message.author.id].message
           .react('704554845813866506');
     };
   };

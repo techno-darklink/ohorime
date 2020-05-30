@@ -15,6 +15,13 @@ const userShema = {
       timeout: Date.now() - 21600000,
     },
   },
+  daily: {
+    'type': Object,
+    'default': {
+      count: 0,
+      timeout: Date.now() - 86400000,
+    },
+  },
   banner: {
     'type': Object,
     'default': {
