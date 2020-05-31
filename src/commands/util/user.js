@@ -259,6 +259,7 @@ module.exports = class User extends Command {
       let indexage = 1;
       // eslint-disable-next-line guard-for-in
       for (const key in packet) {
+        if (indexage > 5) continue;
         embed.fields.push({
           name: `user liste ${indexage}`,
           value: packet[key].join(' '),

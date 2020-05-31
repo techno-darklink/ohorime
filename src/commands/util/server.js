@@ -18,7 +18,7 @@ module.exports = class Server extends Command {
       enable: true,
       guildOnly: false,
       aliases: ['serverinfo', 'infoserver', 'serverinfo', 'servinfo', 'serv'],
-      mePerm: ['EMBED_LINKS'],
+      mePerm: ['EMBED_LINKS', 'MANAGE_GUILD'],
     });
     this.client = client;
   };
@@ -41,11 +41,11 @@ module.exports = class Server extends Command {
       title: message.guild.name + ' - ID: ' + message.guild.id,
       color: guild.color,
       description: (invite ?
-        `[invite](https://discord.gg/${invite[0]})` :
-        `Aucune invitation`) +
+        `https://discord.gg/${invite[0]}` :
+        `no invitation`) +
         '\n' +
         (message.guild.description === null ?
-        `Aucune description` :
+        `no description` :
         message.guild.description),
       thumbnail: {},
       fields: [

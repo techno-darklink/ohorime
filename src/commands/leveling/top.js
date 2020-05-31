@@ -61,7 +61,7 @@ module.exports = class Top extends Command {
       const rawBoard = levelingUser.sort((a, b) =>
         b.messageCount - a.messageCount);
       const embed = {
-        title: language(guild.lg, 'command_top_embedglobal_title'),
+        title: language(guild.lg, 'command_top_embed_title'),
         color: guild.color,
         fields: [],
       };

@@ -5,7 +5,7 @@ const guildShema = {
   id: String,
   prefix: String,
   color: String,
-  language: {
+  lg: {
     'type': String,
     'default': 'en',
   },
