@@ -51,8 +51,7 @@ module.exports = class Daily extends Command {
                       .format('h:mm:ss')),
       );
     };
-    console.log(Date.now() > (user.daily.timeout+86400000));
-    if ((Date.now() > (user.daily.timeout+86400000))) {
+    if ((Date.now() > (user.daily.timeout+86400000*2))) {
       user.daily.count = 1;
       user.daily.timeout = Date.now();
       message.channel.send({
