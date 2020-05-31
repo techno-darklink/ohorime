@@ -4,6 +4,7 @@ const {DISCORD_TOKEN, CONFIG} = require('./../configuration');
 const klaw = require('klaw');
 const OhorimeClient = require('./OhorimeClient');
 const {parse, sep, resolve} = require('path');
+const {Intents} = require('discord.js');
 
 /**
  * @type {OhorimeClient}
@@ -15,9 +16,7 @@ const client = new OhorimeClient({
   },
   fetchAllMembers: true,
   ws: {
-    intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_EMOJIS',
-      'GUILD_VOICE_STATES', 'GUILD_PRESENCES', 'GUILD_MESSAGES',
-      'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS'],
+    intents: Intents.ALL,
   },
   partials: ['MESSAGE', 'REACTION'],
   presence: {

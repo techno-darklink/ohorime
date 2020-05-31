@@ -47,41 +47,41 @@ module.exports = class Loop extends Command {
     switch (query.join('')) {
       case 'off':
         guildPlayer.player_loop = 'off';
-        await this.client.updateGuild(message.guild, {
+        await this.client.updatePlayerGuild(message.guild, {
           player_loop: guildPlayer.player_loop,
         });
         message.react('➡️');
         break;
       case 'on':
         guildPlayer.player_loop = 'on';
-        await this.client.updateGuild(message.guild, {
+        await this.client.updatePlayerGuild(message.guild, {
           player_loop: guildPlayer.player_loop,
         });
         message.react('🔁');
         break;
       case 'once':
         guildPlayer.player_loop = 'once';
-        await this.client.updateGuild(message.guild, {
+        await this.client.updatePlayerGuild(message.guild, {
           player_loop: guildPlayer.player_loop,
         });
         message.react('🔂');
         break;
       default:
-        if (guild.player.loop === 'off') {
+        if (guildPlayer.player_loop === 'off') {
           guildPlayer.player_loop = 'on';
-          await this.client.updateGuild(message.guild, {
+          await this.client.updatePlayerGuild(message.guild, {
             player_loop: guildPlayer.player_loop,
           });
           message.react('🔁');
-        } else if (guild.player.loop === 'on') {
+        } else if (guildPlayer.player_loop === 'on') {
           guildPlayer.player_loop = 'once';
-          await this.client.updateGuild(message.guild, {
+          await this.client.updatePlayerGuild(message.guild, {
             player_loop: guildPlayer.player_loop,
           });
           message.react('🔂');
-        } else if (guild.player.loop === 'once') {
+        } else if (guildPlayer.player_loop === 'once') {
           guildPlayer.player_loop = 'off';
-          await this.client.updateGuild(message.guild, {
+          await this.client.updatePlayerGuild(message.guild, {
             player_loop: guildPlayer.player_loop,
           });
           message.react('➡️');

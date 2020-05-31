@@ -59,6 +59,11 @@ module.exports = class Play extends Command {
         );
       };
     } else {
+      if (!message.member.voice.channel) {
+        return message.channel.send(
+            language(guild.lg, 'command_music_userNoJoin'),
+        );
+      };
       if (!this.client.music[message.guild.id].connection) {
         this.client.music[message.guild.id].connection =
           await message.member.voice.channel.join();
@@ -214,7 +219,7 @@ module.exports = class Play extends Command {
             this.play(message, guildPlayer, guild);
           } else if (guildPlayer.player_loop === 'on') {
             if (this.client.music[message.guild.id].index ===
-    guild.player_history.length - 1) {
+              guildPlayer.player_history.length - 1) {
               this.client.music[message.guild.id].index = 0;
             } else {
               this.client.music[message.guild.id].index++;

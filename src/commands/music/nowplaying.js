@@ -33,7 +33,7 @@ module.exports = class Nowplaying extends Command {
    * @param {Object} options.guild - guild data
    * @return {Message}
    */
-  async launch(message, query, {guild}) {
+  async launch(message, query, {guild, guildPlayer}) {
     if (!this.client.music[message.guild.id]) return message.react('💢');
     if (!this.client.music[message.guild.id].dispatcher) {
       return message.channel.send(
@@ -44,7 +44,7 @@ module.exports = class Nowplaying extends Command {
       case 'player':
         const duration =
           moment.duration({
-            ms: guild.player_history[
+            ms: guildPlayer.player_history[
                 this.client.music[message.guild.id].index].time,
           });
         const progress =
@@ -54,7 +54,7 @@ module.exports = class Nowplaying extends Command {
         // eslint-disable-next-line max-len
         const progressBar = ['▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬'];
         // eslint-disable-next-line max-len
-        const calcul = Math.round(progressBar.length * (this.client.music[message.guild.id].dispatcher.streamTime/ (guild.player_history[
+        const calcul = Math.round(progressBar.length * (this.client.music[message.guild.id].dispatcher.streamTime/ (guildPlayer.player_history[
             this.client.music[message.guild.id].index].time)));
         progressBar[calcul] = '🔘';
         message.channel.send({
@@ -63,12 +63,14 @@ module.exports = class Nowplaying extends Command {
             title: language(guild.lg, 'command_music_queue'),
             // eslint-disable-next-line max-len
             description: `[${
-              guild.player_history[this.client.music[message.guild.id].index]
+              guildPlayer
+                  .player_history[this.client.music[message.guild.id].index]
                   .snippet.title
-            }](https://www.youtube.com/watch?v=${guild.player_history[this.client.music[message.guild.id].index].id.videoId})`,
+            }](https://www.youtube.com/watch?v=${guildPlayer.player_history[this.client.music[message.guild.id].index].id.videoId})`,
             thumbnail: {
               url:
-              guild.player_history[this.client.music[message.guild.id].index]
+              guildPlayer
+                  .player_history[this.client.music[message.guild.id].index]
                   .snippet.thumbnails.default.url,
             },
             fields: [
