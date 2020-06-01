@@ -20,7 +20,7 @@ module.exports = class Pixel extends Command {
       description: 'command_pixel_description',
       usage: 'pixel (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

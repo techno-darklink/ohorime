@@ -20,7 +20,7 @@ module.exports = class Invert extends Command {
       description: 'command_invert_description',
       usage: 'invert (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

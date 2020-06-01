@@ -20,7 +20,7 @@ module.exports = class Gay extends Command {
       description: 'command_gay_description',
       usage: 'gay (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

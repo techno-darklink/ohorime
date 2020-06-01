@@ -20,7 +20,7 @@ module.exports = class Blackandwhite extends Command {
       description: 'command_black&white_description',
       usage: 'black&white (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

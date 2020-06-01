@@ -20,7 +20,7 @@ module.exports = class Prison extends Command {
       description: 'command_prison_description',
       usage: 'prison (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

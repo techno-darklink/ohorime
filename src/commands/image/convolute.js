@@ -20,7 +20,7 @@ module.exports = class Convolute extends Command {
       description: 'command_convolute_description',
       usage: 'convolute (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

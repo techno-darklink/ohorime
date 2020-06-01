@@ -20,7 +20,7 @@ module.exports = class Missing extends Command {
       description: 'command_missing_description',
       usage: 'missing (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

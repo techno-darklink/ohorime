@@ -20,7 +20,7 @@ module.exports = class Beautiful extends Command {
       description: 'command_beautiful_description',
       usage: 'beautiful (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

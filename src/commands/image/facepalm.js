@@ -20,7 +20,7 @@ module.exports = class Facepalm extends Command {
       description: 'command_facepalm_description',
       usage: 'facepalm (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

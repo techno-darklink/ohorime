@@ -20,7 +20,7 @@ module.exports = class Cat extends Command {
       description: 'command_cat_description',
       usage: 'cat',
       nsfw: false,
-      enable: false,
+      enable: true,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

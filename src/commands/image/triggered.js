@@ -20,7 +20,7 @@ module.exports = class Triggered extends Command {
       description: 'command_triggered_description',
       usage: 'triggered (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['ATTACH_FILES'],

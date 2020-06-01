@@ -20,7 +20,7 @@ module.exports = class Tatoo extends Command {
       description: 'command_tatoo_description',
       usage: 'tatoo (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

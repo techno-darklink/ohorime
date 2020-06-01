@@ -20,7 +20,7 @@ module.exports = class Bobross extends Command {
       description: 'command_bobross_description',
       usage: 'bobross (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

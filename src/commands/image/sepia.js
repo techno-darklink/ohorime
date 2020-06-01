@@ -20,7 +20,7 @@ module.exports = class Sepia extends Command {
       description: 'command_sepia_description',
       usage: 'sepia (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

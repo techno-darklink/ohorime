@@ -20,7 +20,7 @@ module.exports = class Mandms extends Command {
       description: 'command_m&ms_description',
       usage: 'm&ls (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

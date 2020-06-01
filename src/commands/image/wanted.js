@@ -20,7 +20,7 @@ module.exports = class Wanted extends Command {
       description: 'command_wanted_description',
       usage: 'wanted (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

@@ -20,7 +20,7 @@ module.exports = class Thomas extends Command {
       description: 'command_thomas_description',
       usage: 'thomas (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

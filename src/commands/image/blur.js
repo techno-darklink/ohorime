@@ -20,7 +20,7 @@ module.exports = class Blur extends Command {
       description: 'command_blur_description',
       usage: 'blur (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],

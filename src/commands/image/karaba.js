@@ -20,7 +20,7 @@ module.exports = class Karaba extends Command {
       description: 'command_karaba_description',
       usage: 'karaba (mentions)',
       nsfw: false,
-      enable: true,
+      enable: false,
       guildOnly: false,
       aliases: [],
       mePerm: ['EMBED_LINKS'],
