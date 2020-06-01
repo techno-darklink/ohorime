@@ -93,7 +93,7 @@ module.exports = class Anime extends Command {
           Util.reduceString(d, 2000)));
     };
     const embed = {
-      color: this.client.items[message.author.id].color,
+      color: this.client.anime[message.author.id].color,
       title: convert(
             data[this.client.anime[message.author.id].pagination].romaji +
         '  -  ID: ' +

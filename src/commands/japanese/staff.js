@@ -80,7 +80,7 @@ const {Util} = require('node-anemy');
     this.client.anime[message.author.id].message =
         await message.channel.send({
           embed: {
-            color: this.client.items[message.author.id].color,
+            color: this.client.anime[message.author.id].color,
             title: convert(data[this.client.anime[message.author.id].pagination].prenom +
               ' '+
               data[this.client.anime[message.author.id].pagination].nom +
