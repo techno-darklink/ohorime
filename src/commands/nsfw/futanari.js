@@ -6,16 +6,16 @@ const {nsfw} = new (require('nekos.life'))();
 /**
  * Command class
  */
-module.exports = class Futunari extends Command {
+module.exports = class Futanari extends Command {
   /**
    * @param {Client} client - Client
    */
   constructor(client) {
     super(client, {
-      name: 'futinari',
+      name: 'futanari',
       category: 'nsfw',
-      description: 'command_futinari_description',
-      usage: 'futinari',
+      description: 'command_futanari_description',
+      usage: 'futanari',
       nsfw: true,
       enable: true,
       guildOnly: false,
@@ -32,11 +32,11 @@ module.exports = class Futunari extends Command {
    * @return {Message}
    */
   async launch(message, query, {guild}) {
-    const image = await nsfw.futinari();
+    const image = await nsfw.futanari();
     return message.channel.send({
       embed: {
         color: guild.color,
-        title: 'futinari',
+        title: 'futanari',
         description:
           `[${language(guild.lg, 'command_img_notShow')}](${image.url})`,
         image: {
