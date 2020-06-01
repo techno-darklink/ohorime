@@ -168,6 +168,9 @@ module.exports = class Play extends Command {
           language(guild.lg, 'command_music_notQueue'),
       );
     };
+    if (!guildPlayer.player_history[this.client.music[message.guild.id].index]) {
+      this.client.music[message.guild.id].index = guildPlayer.player_history.length;
+    };
     this.client.music[message.guild.id].dispatcher =
     this.client.music[message.guild.id].connection.play(
         await ytdl(`https://www.youtube.com/watch?v=${guildPlayer.player_history[this.client.music[message.guild.id].index].id.videoId}`, {
