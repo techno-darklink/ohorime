@@ -32,11 +32,11 @@ module.exports = class Blowjob extends Command {
    * @return {Message}
    */
   async launch(message, query, {guild}) {
-    const image = await nsfw.blowjob();
+    const image = await nsfw.blowJob();
     return message.channel.send({
       embed: {
         color: guild.color,
-        title: 'blowjob',
+        title: 'blowJob',
         description:
           `[${language(guild.lg, 'command_img_notShow')}](${image.url})`,
         image: {
