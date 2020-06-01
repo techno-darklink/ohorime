@@ -90,8 +90,9 @@ module.exports = class Help extends Command {
     // eslint-disable-next-line guard-for-in
     for (const key in cmd) {
       content.embed.fields.push({
-        name: `**${cmd[key].length} · ${key}**`,
-        value: '`' + cmd[key].map((v) => v.help.name).join('`, `') + '`',
+        name: `**${cmd[key].filter((v) => v.conf.enable).length} · ${key}**`,
+        value: cmd[key].filter((v) => v.conf.enable)
+            .map((v) => `\`${v.help.name}\``).join(', '),
         inline: false,
       });
     };
