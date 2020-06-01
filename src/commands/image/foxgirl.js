@@ -32,11 +32,11 @@ module.exports = class Foxgirl extends Command {
    * @return {Message}
    */
   async launch(message, query, {guild}) {
-    const image = await sfw.foxgirl();
+    const image = await sfw.foxGirl();
     return message.channel.send({
       embed: {
         color: guild.color,
-        title: 'Foxgirl',
+        title: 'foxGirl',
         description:
           `[${language(guild.lg, 'command_img_notShow')}](${image.url})`,
         image: {
