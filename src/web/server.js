@@ -27,14 +27,12 @@ module.exports = function(client) {
   app.use(function(req, res, next) {
     console.log(`API has been called with this url: ${req.url}`);
     next();
-  });
-
-  app.use(function(req, res, next) {
+  }, function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods',
         'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers',
-        'X-Requested-With, ontent-Type, Authorization');
+        'X-Requested-With, Content-Type, Authorization');
     if ('OPTIONS' == req.method) {
       res.sendStatus(204);
     } else {
