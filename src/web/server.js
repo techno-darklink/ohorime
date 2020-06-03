@@ -15,7 +15,10 @@ const {
 const axios = require('axios');
 const base64 = require('./../plugin/base64');
 const language = require('./../i18n');
+const config = require('./../../configuration');
+const {WebhookClient} = require('discord.js');
 // const DBL = require('dblapi.js');
+const voteWebhook = new WebhookClient('717818725566382181', 'fVhPV9OujnWQEfcEIlBEa7dc2IdDPHfj10IrPFqBjqTgVdVDEPVSFd_vTWDvbYZOdN-X');
 
 module.exports = function(client) {
   //const dbl = new DBL(, client);
@@ -235,5 +238,41 @@ module.exports = function(client) {
   });
 
   /** WEBHOOK */
-  /** SOON */
+  
+  app.post('/webhook/arcane', async (req, res) => {
+    if (config.ARCANE.token !== req.headers.authorization) return res.status(403).json({error: true, message: 'authorization refused'});
+    const user = await client.getUser(req.body.user);
+    if (user) {
+      await client.updateUser(req.body.user, {
+        coins: user.coins + 800,
+      });
+      const u = await client.shard.broadcastEval(`
+        (async () => {
+          const u = await this.users.cache.find(v => v.id === '${req.body.user.id}');
+          if (u) {
+            u.send(\`${req.body.user.username}, merci pour ton vote <3, je t'ai offert 800 coins\`).catch(console.log);
+          };
+          return u;
+        })();
+      `);
+      console.log(u);
+    };
+    voteWebhook.send({
+      username: 'Arcane Center',
+      avatarURL: 'https://cdn.discordapp.com/avatars/561852026133282826/ad2b8c8ec13635dd32a670517228a258.png',
+      embeds: [{
+        description: `${req.body.user.username}#${req.body.user.discriminator} voted for ${client.user.username} <3`,
+        color: '#f890ac',
+        thumbnails: req.body.user.avatar ? {
+          url: `https://cdn.discordapp.com/avatars/${req.body.user.id}/${req.body.user.avatar}.${req.body.user.avatar.startsWith('a_') ? 'gif' : 'png'}`
+        } : {},
+        footer: {
+          text: req.body.site,
+          icon_url: 'https://cdn.discordapp.com/avatars/561852026133282826/ad2b8c8ec13635dd32a670517228a258.png',
+        },
+        timestamp: new Date(),
+      }]
+    })
+    res.end();
+  });
 };
