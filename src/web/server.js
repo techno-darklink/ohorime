@@ -109,7 +109,7 @@ module.exports = function(client) {
     if (user.coins < item.price) return res.status(400).json({error: true, message: 'insufficient balance'});
     guild.items.push(item);
     const d = await client.updateUser(user, {
-      coins: guild.coins - item.price,
+      coins: Number(user.coins) - Number(item.price),
     }).then(() => new Object({error: false, message: 'OK'})).catch((e) => new Object({error: true, message: e}));
     if (d.error) return res.status(400).json(d);
     return res.status(202).json(await client.updateGuild(guild, {
