@@ -42,7 +42,7 @@ module.exports = class Ping extends Command {
         `🏓 Pong !\n> Client latency: **${
           this.client.ws.ping
         } ms**\n> API latency: **${
-          Date.now() - message.createdTimestamp
+          Date.now() - pingMessage.createdTimestamp
         } ms**\n> Speed of the bot to complete a task : **${
           Date.now() - processTime
         } ms**`)

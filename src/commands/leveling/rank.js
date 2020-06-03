@@ -24,6 +24,24 @@ function calculatepoint(messages, difficulty = 1.25) {
   algos.ratio = algos.xp/algos.next;
   return algos;
 };
+/**
+ * Shorten
+ * @param {number} number
+ * @return {number|null}
+ */
+function shorten(number) {
+  if (isNaN(number) || typeof number !== 'number') return null;
+  const count = String(number).length;
+  const t = String(number).split('');
+  if (count <= 3) return number;
+  else if (count > 3 && count <= 6) {
+    return `${t.join('').slice(0, t.length-3)}k`;
+  } else if (count > 6 && count <= 9) {
+    return `${t.join('').slice(0, t.length-6)}M`;
+  } else if (count > 9 && count <= 12) {
+    return `${t.join('').slice(0, t.length-9)}B`;
+  } else return number;
+};
 
 /**
  * Command class
@@ -67,7 +85,7 @@ module.exports = class Rank extends Command {
         user.banner.extension[user.banner.extension.findIndex((e) => e === 'png')] :
         user.banner.extension[user.banner.extension.findIndex((e) => e === 'jpg')]
       }`);
-      const buffer = new Canvas(400, 180)
+      const buffer = new Canvas(1920, 1080)
           .setColor('#7289DA')
           .addImage(background, 0, 0, 400, 180, {restore: true})
           // .addRect(84, 0, 316, 180)
@@ -99,7 +117,7 @@ module.exports = class Rank extends Command {
           .setTextFont('10pt sans')
           .setColor('#FFFFFF')
           .addText(`lvl: ${point.level.toLocaleString()} | ${name}`, 90, 138)
-          .addText(`xp: ${point.xp.toLocaleString()}`, 43, 167)
+          .addText(`xp: ${shorten(point.xp.toLocaleString())}`, 43, 167)
           .setTextAlign('left')
           // .addText(`Score: ${Math.round(point.xp.toLocaleString())}`, 241, 136)
           .toBuffer();

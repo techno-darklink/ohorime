@@ -32,7 +32,7 @@ module.exports = function(client) {
     res.setHeader('Access-Control-Allow-Methods',
         'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers',
-        'X-Requested-With, Content-Type, Authorization');
+        'X-Requested-With, C  ontent-Type, Authorization');
     if ('OPTIONS' == req.method) {
       res.sendStatus(204);
     } else {
@@ -90,8 +90,9 @@ module.exports = function(client) {
 
   app.post('/guild/:id/purchase', async (req, res) => {
     const guild = await Guild.findOne({id: req.params.id});
-    const user = await User.findOne({id: req.body.user})
+    const user = await User.findOne({id: req.body.id});
     if (!guild) return res.status(404).json({error: true, message: 'guild not found'});
+    if (!user) return res.status(404).json({error: true, message: 'user not found'});
     if ((req.headers.authorization !== client.config.authorization)
       && (req.headers.authorization !== (await AuthGuild.findOne({id: req.params.id})).token)) return res.status(403).json({error: true, message: 'authorization refused'});
     let store = await axios({url: 'https://cdn.ohori.me/store.json', method: 'GET', headers: {'Content-Type': 'application/json'}})

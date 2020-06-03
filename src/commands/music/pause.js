@@ -43,11 +43,6 @@ module.exports = class Pause extends Command {
           language(guild.lg, 'command_pause_noPermission'),
       );
     };
-    if (joining === 'PLAYING') {
-      return message.channel.send(
-          language(guild.lg, 'command_pause_noCutMusic'),
-      );
-    };
     if (this.client.music[message.guild.id].broadcast) {
       return message.reply('⚠️');
     };
