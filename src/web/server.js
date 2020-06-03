@@ -32,7 +32,7 @@ module.exports = function(client) {
     res.setHeader('Access-Control-Allow-Methods',
         'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers',
-        'X-Requested-With, C  ontent-Type, Authorization');
+        'X-Requested-With, Content-Type, Authorization');
     if ('OPTIONS' == req.method) {
       res.sendStatus(204);
     } else {
