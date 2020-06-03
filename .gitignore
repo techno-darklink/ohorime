@@ -6,3 +6,4 @@ configuration.js
 
 # env
 ecosystem.config.js
+.vscode/
