@@ -4,6 +4,7 @@ const Command = require('../../plugin/Command');
 const {Canvas} = require('canvas-constructor');
 const {loadImage} = require('canvas');
 const {MessageAttachment} = require('discord.js');
+const imgo = require('imgo');
 
 /**
  * Get algorithme
@@ -122,8 +123,15 @@ module.exports = class Rank extends Command {
           // .addText(`Score: ${Math.round(point.xp.toLocaleString())}`, 241, 136)
           .toBuffer();
       const fileName = `globalRank-${message.author.id}.png`;
-      const attachment = new MessageAttachment(buffer, fileName);
-      await message.channel.send({files: [attachment]});
+      imgo(buffer, {
+        pngquant  : true,
+        optipng   : true,
+        zopflipng : true,
+        pngcrush  : true
+      }).then(optimized => {
+        const attachment = new MessageAttachment(optimized, fileName);
+        message.channel.send({files: [attachment]});
+      });
     } else {
       const name = member.displayName.length > 20 ?
         member.displayName.substring(0, 17) + '...' : member.displayName;
@@ -178,8 +186,15 @@ module.exports = class Rank extends Command {
           // .addText(`Score: ${Math.round(point.xp.toLocaleString())}`, 241, 136)
           .toBuffer();
       const fileName = `rank-${message.author.id}.png`;
-      const attachment = new MessageAttachment(buffer, fileName);
-      await message.channel.send({files: [attachment]});
+      imgo(buffer, {
+        pngquant  : true,
+        optipng   : true,
+        zopflipng : true,
+        pngcrush  : true
+      }).then(optimized => {
+        const attachment = new MessageAttachment(optimized, fileName);
+        message.channel.send({files: [attachment]});
+      });
     };
   };
 };
