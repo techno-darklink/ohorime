@@ -174,14 +174,7 @@ module.exports = class Profil extends Command {
         .save()
         .toBuffer();
     const fileName = `globalRank-${message.author.id}.png`;
-    imgo(buffer, {
-      pngquant: true,
-      optipng: true,
-      zopflipng: true,
-      pngcrush: true,
-    }).then((optimized) => {
-      const attachment = new MessageAttachment(optimized, fileName);
-      message.channel.send({files: [attachment]});
-    });
+    const attachment = new MessageAttachment(buffer, fileName);
+    message.channel.send({files: [attachment]});
   };
 };
