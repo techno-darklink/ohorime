@@ -59,9 +59,11 @@ module.exports = class Profil extends Command {
    * @return {Message}
    */
   async launch(message, query, {guild, user, levelingUser}) {
-    const name = message.member.displayName.length > 20 ?
-    message.member.displayName.substring(0, 17) + '...' :
-    message.member.displayName;
+    const member = message.mentions.members.first() || message.member;
+    const userlvl = await this.client.getLevelingUser(member);
+    user = await this.client.getUser(member);
+    const name = member.displayName.length > 20 ?
+    member.displayName.substring(0, 17) + '...' : member.displayName;
     const background = await loadImage(`https://cdn.ohori.me/store/${user.banner.id}.${
       user.banner.extension.includes('png') ?
       user.banner.extension[
@@ -69,12 +71,12 @@ module.exports = class Profil extends Command {
       user.banner.extension[user.banner.extension.findIndex((e) => e === 'jpg')]
     }`);
     const avatar =
-      await loadImage(message.author.displayAvatarURL({format: 'jpg'}));
+      await loadImage(member.user.displayAvatarURL({format: 'jpg'}));
     const coin =
       await loadImage('https://cdn.discordapp.com/emojis/705224959651479603.png?v=1');
     const speech =
       await loadImage('https://cdn.discordapp.com/emojis/716370058737352755.png?v=1');
-    const userflags = await message.author.fetchFlags();
+    const userflags = await member.user.fetchFlags();
     const flags = new UserFlags(userflags.bitfield).serialize();
     const DISCORD_EMPLOYEE =
       await loadImage('https://cdn.discordapp.com/emojis/716392567846993960.png?v=1');
@@ -154,7 +156,7 @@ module.exports = class Profil extends Command {
         .addText(shorten(user.coins),
             66, 260)
         .addImage(speech, 5, 280, 25, 25, {restore: true})
-        .addText(shorten(levelingUser.messageCount), 66, 300)
+        .addText(shorten(userlvl.messageCount), 66, 300)
         // Badge 1
         .setColor('#23272A')
         .createBeveledClip(160, 230, 40, 40, 140)
@@ -172,7 +174,7 @@ module.exports = class Profil extends Command {
         .restore()
         .save()
         .toBuffer();
-    const fileName = `globalRank-${message.author.id}.png`;
+    const fileName = `profile-${message.author.id}.png`;
     const attachment = new MessageAttachment(main, fileName);
     message.channel.send({files: [attachment]});
   };

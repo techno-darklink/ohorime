@@ -73,12 +73,14 @@ module.exports = class Rank extends Command {
    * @return {Message}
    */
   async launch(message, query, {guild, user, levelingUser, levelingGuild}) {
-    const member = message.member;
+    const member = message.mentions.members.first() || message.member;
+    const userLvl = await this.client.getLevelingUser(member);
+    user = await this.client.getUser(member);
+    const name = member.displayName.length > 20 ?
+      member.displayName.substring(0, 17) + '...' : member.displayName;
     if (query.join('') === 'global') {
-      const name = member.displayName.length > 20 ?
-        member.displayName.substring(0, 17) + '...' : member.displayName;
         
-      const point = calculatepoint(levelingUser.messageCount);
+      const point = calculatepoint(userLvl.messageCount);
       
       const avatar = await loadImage(member.user.displayAvatarURL({ format: 'jpg' }));
       const background = await loadImage(`https://cdn.ohori.me/store/${user.banner.id}.${
@@ -123,21 +125,11 @@ module.exports = class Rank extends Command {
           // .addText(`Score: ${Math.round(point.xp.toLocaleString())}`, 241, 136)
           .toBuffer();
       const fileName = `globalRank-${message.author.id}.png`;
-      imgo(buffer, {
-        pngquant  : true,
-        optipng   : true,
-        zopflipng : true,
-        pngcrush  : true
-      }).then(optimized => {
-        const attachment = new MessageAttachment(optimized, fileName);
-        message.channel.send({files: [attachment]});
-      });
+      const attachment = new MessageAttachment(buffer, fileName);
+      message.channel.send({files: [attachment]});
     } else {
-      const name = member.displayName.length > 20 ?
-        member.displayName.substring(0, 17) + '...' : member.displayName;
-        
       const u = levelingGuild.users
-        .findIndex((u) => u.id === message.author.id);
+        .findIndex((u) => u.id === member.id);
       const point = calculatepoint(levelingGuild.users[u].messageCount);
       
       const avatar = await loadImage(member.user.displayAvatarURL({ format: 'jpg' }));
@@ -178,7 +170,7 @@ module.exports = class Rank extends Command {
           .setTextFont('10pt sans')
           .setColor('#FFFFFF')
           .addText(`lvl: ${point.level.toLocaleString()} | ${name}`, 90, 138)
-          .addText(`xp: ${shorten(point.xp.toLocaleString())}`, 40, 167)
+          .addText(`xp: ${shorten(Number(point.xp.toLocaleString()))}`, 40, 167)
           .setTextAlign('right')
           .setTextFont('12pt sans')
           .addText(`${message.guild.name}`, 375, 20)
