@@ -6,7 +6,6 @@ const {Canvas} = require('canvas-constructor');
 const {loadImage} = require('canvas');
 const {MessageAttachment} = require('discord.js');
 const {sep} = require('path');
-const imgo = require('imgo');
 Canvas.registerFont(process.cwd() +
   `${sep}assets${sep}fonts${sep}Nunito/Nunito-Regular.ttf`, 'Nunito');
 Canvas.registerFont(process.cwd() +
@@ -174,7 +173,7 @@ module.exports = class Profil extends Command {
         .save()
         .toBuffer();
     const fileName = `globalRank-${message.author.id}.png`;
-    const attachment = new MessageAttachment(buffer, fileName);
+    const attachment = new MessageAttachment(main, fileName);
     message.channel.send({files: [attachment]});
   };
 };

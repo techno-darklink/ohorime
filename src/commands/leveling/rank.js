@@ -31,7 +31,7 @@ function calculatepoint(messages, difficulty = 1.25) {
  * @return {number|null}
  */
 function shorten(number) {
-  if (isNaN(number) || typeof number !== 'number') return null;
+  if (isNaN(number) && typeof number !== 'number') return number;
   const count = String(number).length;
   const t = String(number).split('');
   if (count <= 3) return number;
