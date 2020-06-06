@@ -49,11 +49,28 @@ module.exports = class Anime extends Command {
         },
       });
     };
+    /**
+     * ['-id', '1'] -> '-id 1'
+     * @type {string}
+     */
     let serialize = query.join(' ');
+    /**
+     * '-id 1' -> ['', 'id 1']
+     * @type {Array<string>}
+     */
     serialize = serialize.split(/-+/g);
+    /**
+     * Supprime le 1er élément de l'array
+     */
     serialize.shift();
+    /**
+     * @type {Array<string>}
+     */
     const mapping = [];
     serialize.map((v) => mapping.push([v.split(/ +/g).shift().trim().toLowerCase(), v.split(/ +/g).slice(1).join(' ')]));
+    /**
+     * @type {Object<key, value>}
+     */
     const params = Object.fromEntries(mapping);
     let data = await this.client.anemy.getAnime(params);
     if (!data) {
