@@ -30,6 +30,6 @@ module.exports = class Invite extends Command {
     /**
      * Send message
      */
-    return message.channel.send(`https://discord.com/api/oauth2/authorize?client_id=704867756595478549&permissions=-1&redirect_uri=https%3A%2F%2Fohori.me%2Fdiscord%2Fcallback&scope=bot`);
+    return message.channel.send(`https://discord.com/api/oauth2/authorize?client_id=${this.client.user.id}&permissions=-1&scope=bot`);
   };
 };
