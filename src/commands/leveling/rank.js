@@ -31,7 +31,7 @@ function calculatepoint(messages, difficulty = 1.25) {
  * @return {number|null}
  */
 function shorten(number) {
-  if (isNaN(number) && typeof number !== 'number') return number;
+  if (isNaN(number)) return number;
   const count = String(number).length;
   const t = String(number).split('');
   if (count <= 3) return number;
@@ -88,42 +88,42 @@ module.exports = class Rank extends Command {
         user.banner.extension[user.banner.extension.findIndex((e) => e === 'png')] :
         user.banner.extension[user.banner.extension.findIndex((e) => e === 'jpg')]
       }`);
-      const buffer = new Canvas(1920, 1080)
-          .setColor('#7289DA')	
-          .addImage(background, 0, 0, 400, 180, {restore: true})	
-          // .addRect(84, 0, 316, 180)	
-          .setColor('#2C2F33')	
-          // .addRect(169, 26, 231, 46)	
-          // .addRect(224, 108, 176, 46)	
-          .save()	
-          .createBeveledClip(10, 150, 380, 25, 5)	
-          .fill()	
-          .restore()	
-          .setColor('#7289DA')	
-          .save()//                   ---------------	
-          .createBeveledClip(35, 153, point.ratio*352, 20, 5)	
-          .fill()	
-          .restore()	
-          .setColor('#2C2F33')	
-          .setShadowColor('rgba(22, 22, 22, 1)')	
-          .setShadowOffsetY(5)	
-          .setShadowBlur(10)	
-          .addCircle(84, 70, 62)	
-          // eslint-disable-next-line max-len	
-          .addCircularImage(avatar, 86, 65, 64) 	
-          .save()	
-          .createBeveledClip(10, 120, 160, 25, 5)	
-          .setColor('#23272A')	
-          .fill()	
-          .restore()	
-          .setTextAlign('center')	
-          .setTextFont('10pt sans')	
-          .setColor('#FFFFFF')
-          .addText(`lvl: ${point.level.toLocaleString()} | ${name}`, 90, 138)
-          .addText(`xp: ${shorten(point.xp.toLocaleString())}`, 43, 167)
-          .setTextAlign('left')	
-          // .addText(`Score: ${Math.round(point.xp.toLocaleString())}`, 241, 136)
-          .toBuffer();
+      const buffer = new Canvas(400, 180)
+        .setColor('#7289DA')	
+        .addImage(background, 0, 0, 400, 180, {restore: true})	
+        // .addRect(84, 0, 316, 180)	
+        .setColor('#2C2F33')	
+        // .addRect(169, 26, 231, 46)	
+        // .addRect(224, 108, 176, 46)	
+        .save()	
+        .createBeveledClip(10, 150, 380, 25, 5)	
+        .fill()	
+        .restore()	
+        .setColor('#7289DA')	
+        .save()//                   ---------------	
+        .createBeveledClip(35, 153, point.ratio*352, 20, 5)	
+        .fill()	
+        .restore()	
+        .setColor('#2C2F33')	
+        .setShadowColor('rgba(22, 22, 22, 1)')	
+        .setShadowOffsetY(5)	
+        .setShadowBlur(10)	
+        .addCircle(84, 70, 62)	
+        // eslint-disable-next-line max-len	
+        .addCircularImage(avatar, 86, 65, 64) 	
+        .save()	
+        .createBeveledClip(10, 120, 160, 25, 5)	
+        .setColor('#23272A')	
+        .fill()	
+        .restore()	
+        .setTextAlign('center')	
+        .setTextFont('10pt sans')	
+        .setColor('#FFFFFF')
+        .addText(`lvl: ${point.level.toLocaleString()} | ${name}`, 90, 138)
+        .addText(`xp: ${shorten(Number(point.xp.toLocaleString()))}`, 43, 167)
+        .setTextAlign('left')	
+        // .addText(`Score: ${Math.round(point.xp.toLocaleString())}`, 241, 136)
+        .toBuffer();
       const fileName = `globalRank-${message.author.id}.png`;
       const attachment = new MessageAttachment(buffer, fileName);
       message.channel.send({files: [attachment]});
@@ -139,44 +139,44 @@ module.exports = class Rank extends Command {
         user.banner.extension[user.banner.extension.findIndex((e) => e === 'jpg')]
       }`);
       const buffer = new Canvas(400, 180)
-          .setColor('#7289DA')
-          .addImage(background, 0, 0, 400, 180, {restore: true})
-          // .addRect(84, 0, 316, 180)
-          .setColor('#2C2F33')
-          // .addRect(169, 26, 231, 46)
-          // .addRect(224, 108, 176, 46)
-          .save()
-          .createBeveledClip(10, 150, 380, 25, 5)
-          .fill()
-          .restore()
-          .setColor('#7289DA')
-          .save()//                   ---------------
-          .createBeveledClip(35, 153, point.ratio*352, 20, 5)
-          .fill()
-          .restore()
-          .setColor('#2C2F33')
-          .setShadowColor('rgba(22, 22, 22, 1)')
-          .setShadowOffsetY(5)
-          .setShadowBlur(10)
-          .addCircle(84, 70, 62)
-          // eslint-disable-next-line max-len
-          .addCircularImage(avatar, 86, 65, 64) 
-          .save()
-          .createBeveledClip(10, 120, 160, 25, 5)
-          .setColor('#23272A')
-          .fill()
-          .restore()
-          .setTextAlign('center')
-          .setTextFont('10pt sans')
-          .setColor('#FFFFFF')
-          .addText(`lvl: ${point.level.toLocaleString()} | ${name}`, 90, 138)
-          .addText(`xp: ${shorten(Number(point.xp.toLocaleString()))}`, 40, 167)
-          .setTextAlign('right')
-          .setTextFont('12pt sans')
-          .addText(`${message.guild.name}`, 375, 20)
-          .setTextAlign('left')
-          // .addText(`Score: ${Math.round(point.xp.toLocaleString())}`, 241, 136)
-          .toBuffer();
+        .setColor('#7289DA')	
+        .addImage(background, 0, 0, 400, 180, {restore: true})	
+        // .addRect(84, 0, 316, 180)	
+        .setColor('#2C2F33')	
+        // .addRect(169, 26, 231, 46)	
+        // .addRect(224, 108, 176, 46)	
+        .save()	
+        .createBeveledClip(10, 150, 380, 25, 5)	
+        .fill()	
+        .restore()	
+        .setColor('#7289DA')	
+        .save()//                   ---------------	
+        .createBeveledClip(35, 153, point.ratio*352, 20, 5)	
+        .fill()	
+        .restore()	
+        .setColor('#2C2F33')	
+        .setShadowColor('rgba(22, 22, 22, 1)')	
+        .setShadowOffsetY(5)	
+        .setShadowBlur(10)	
+        .addCircle(84, 70, 62)
+        // eslint-disable-next-line max-len
+        .addCircularImage(avatar, 86, 65, 64) 
+        .save()
+        .createBeveledClip(10, 120, 160, 25, 5)
+        .setColor('#23272A')
+        .fill()
+        .restore()
+        .setTextAlign('center')
+        .setTextFont('10pt sans')
+        .setColor('#FFFFFF')
+        .addText(`lvl: ${point.level.toLocaleString()} | ${name}`, 90, 138)
+        .addText(`xp: ${shorten(Number(point.xp.toLocaleString()))}`, 40, 167)
+        .setTextAlign('right')
+        .setTextFont('12pt sans')
+        .addText(`${message.guild.name}`, 375, 20)
+        .setTextAlign('left')
+        // .addText(`Score: ${Math.round(point.xp.toLocaleString())}`, 241, 136)
+        .toBuffer();
       const fileName = `rank-${message.author.id}.png`;
       const attachment = new MessageAttachment(buffer, fileName);
       message.channel.send({files: [attachment]});
