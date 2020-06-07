@@ -174,6 +174,14 @@ module.exports = class Play extends Command {
     };
     if (!guildPlayer.player_history[this.client.music[message.guild.id].index]) {
       this.client.music[message.guild.id].index = guildPlayer.player_history.length;
+      if (!guildPlayer.player_history[this.client.music[message.guild.id].index]) {
+        this.client.music[message.guild.id].index = 0;
+        if (!guildPlayer.player_history[this.client.music[message.guild.id].index]) {
+          return message.channel.send(
+              language(guild.lg, 'command_music_notQueue'),
+          );
+        };
+      };
     };
     this.client.music[message.guild.id].dispatcher =
     this.client.music[message.guild.id].connection.play(
