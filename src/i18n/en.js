@@ -192,7 +192,7 @@ module.exports = {
     'command_watchlist_description': 'Display your watchlist',
     'command_rank_description': 'Display your rank card',
     'command_top_description': 'Send the top 5 xp',
-    'command_top_embed_title': 'Global leaderboard',
+    'command_top_global_embed_title': 'Global leaderboard',
     'command_top_embed_title': '{{server}} leaderboard',
     'command_upvote_description': 'Upvote an user',
     'command_upvote_wait': 'You must wait {{time}}',
