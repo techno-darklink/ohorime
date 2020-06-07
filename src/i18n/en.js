@@ -203,6 +203,7 @@ module.exports = {
     'command_nowplaying_description': 'Display info to current music',
     'command_pause_description': 'Set music in pause',
     'command_play_description': 'Play music',
+    'command_play_isChannel': 'This selection is a channel',
     'command_skip_description': 'Skip music',
     'command_skipto_description': 'Skip music to you choice',
     'command_volume_description': 'Set music volume',

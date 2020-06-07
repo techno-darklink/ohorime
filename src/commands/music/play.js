@@ -116,6 +116,10 @@ module.exports = class Play extends Command {
         collector.stop('PLAY');
         msg.delete();
         msgCollected.delete();
+        console.log(song);
+        if (song.id.kind === 'youtube#channel') {
+          return message.channel.send(language(guild.lg, 'command_play_isChannel'));
+        };
         const info = await ytdl.getBasicInfo(`https://www.youtube.com/watch?v=${song.id.videoId}`);
         song.time = JSON.parse(JSON.stringify(info)).length_seconds*1000;
         song.request = message.member;
