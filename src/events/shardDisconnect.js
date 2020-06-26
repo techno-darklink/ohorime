@@ -27,7 +27,7 @@ module.exports = class ShardDisconnect extends event {
         embeds: [{
           description:
               // eslint-disable-next-line max-len
-              `Shard ${id+1}/${this.client.shard.count} is disconnect`,
+              `Shard ${id+1}/${this.client.shard.count} is disconnected`,
           color: '#450000',
         }],
       });

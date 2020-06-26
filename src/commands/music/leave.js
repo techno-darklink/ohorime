@@ -1,13 +1,15 @@
 'use strict';
+const corePlayer = require('./../../plugin/Music');
 const Command = require('../../plugin/Command');
+const Discord = require('discord.js');
 
 /**
  * Command class
  */
 module.exports = class Leave extends Command {
   /**
-   * @param {Client} client - Client
-   */
+     * @param {Discord.Client} client - Client
+     */
   constructor(client) {
     super(client, {
       name: 'leave',
@@ -17,31 +19,32 @@ module.exports = class Leave extends Command {
       nsfw: false,
       enable: true,
       guildOnly: true,
-      aliases: ['disconnect'],
-      mePerm: [],
+      aliases: [],
+      mePerm: ['MANAGE_MESSAGES', 'EMBED_LINKS', 'ADD_REACTIONS'],
+      userPerm: [],
     });
     this.client = client;
   };
   /**
-   * @param {Message} message - message
-   * @param {Array} query - argument
-   * @param {Object} options - options
-   * @param {Object} options.guild - guild data
-   * @return {Message}
-   */
-  async launch(message, query, {guild}) {
-    const player = new (require('./play'))(this.client);
-    await player.initQueue(this.client.music, message.guild.id);
-    if (!player.hasPermission(message)) {
-      return message.channel.send(
-          language(guild.lg, 'command_leave_noPerm'),
-      );
+     * @param {Discord.Message} message - message
+     * @return {Promise<Discord.Message>}
+     */
+  async launch(message) {
+    if (!message.member.voice.channel) return message.reply('💢');
+    if (!corePlayer.hasPermission(this.client, message)) {
+      const call = await corePlayer.callRequest(message,
+          new Discord.MessageEmbed(), {
+            required: `Require {{mustVote}} votes for seek the stream`,
+            complete: `Vote completed, you seek the stream`,
+            content: `Vote {{haveVoted}}/{{mustVote}}`,
+          });
+      if (call) {
+        return message.member.voice.channel.leave();
+      } else {
+        return message.channel.send(`You don't leave bot from channel`);
+      };
+    } else {
+      return message.member.voice.channel.leave();
     };
-    if (this.client.music[message.guild.id].dispatcher) {
-      this.client.music[message.guild.id].dispatcher.destroy();
-    };
-    this.client.music[message.guild.id].dispatcher = null;
-    await message.guild.me.voice.channel.leave();
-    this.client.music[message.guild.id].connection = null;
   };
 };

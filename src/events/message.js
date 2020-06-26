@@ -73,7 +73,7 @@ module.exports = class Message extends event {
         levelingGuild.dailyActivity = [];
         levelingGuild.dailyActivity.push({
           day: new Date().getDate(),
-          month: new Date().getMonth(),
+          month: new Date().getMonth()+1,
           year: new Date().getFullYear(),
           messages: 1,
         });
@@ -86,12 +86,12 @@ module.exports = class Message extends event {
               levelingGuild.dailyActivity.length - 1].day,
       ).toString() !== new Date(
           new Date().getFullYear(),
-          new Date().getMonth(),
+          new Date().getMonth()+1,
           new Date().getDate()).toString()
       ) {
         levelingGuild.dailyActivity.push({
           day: new Date().getDate(),
-          month: new Date().getMonth(),
+          month: new Date().getMonth()+1,
           year: new Date().getFullYear(),
           messages: 1,
         });
@@ -174,12 +174,12 @@ module.exports = class Message extends event {
         levelingUser.dailyActivity[levelingUser.dailyActivity.length - 1].day,
     ).toString() !== new Date(
         new Date().getFullYear(),
-        new Date().getMonth(),
+        new Date().getMonth()+1,
         new Date().getDate()).toString()
     ) {
       levelingUser.dailyActivity.push({
         day: new Date().getDate(),
-        month: new Date().getMonth(),
+        month: new Date().getMonth()+1,
         year: new Date().getFullYear(),
         messages: 1,
       });

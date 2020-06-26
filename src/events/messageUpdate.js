@@ -91,6 +91,10 @@ module.exports = class MessageUpdate extends event {
     const cmd = this.client.commands.get(command) ||
       this.client.commands.get(this.client.aliases.get(command));
     /**
+     * Ignore music et modération command
+     */
+    if (['music', 'moderation'].includes(cmd.category)) return;
+    /**
      * Check bot permisisons
      */
     if (message.guild &&

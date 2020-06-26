@@ -1,15 +1,16 @@
 'use strict';
+const corePlayer = require('./../../plugin/Music');
 const Command = require('../../plugin/Command');
-const language = require('../../i18n');
+const Discord = require('discord.js');
 const moment = require('moment');
 
 /**
  * Command class
  */
-module.exports = class Nowplaying extends Command {
+module.exports = class NowPlaying extends Command {
   /**
-   * @param {Client} client - Client
-   */
+     * @param {Discord.Client} client - Client
+     */
   constructor(client) {
     super(client, {
       name: 'nowplaying',
@@ -20,129 +21,32 @@ module.exports = class Nowplaying extends Command {
       enable: true,
       guildOnly: true,
       aliases: ['np'],
-      mePerm: [
-        'EMBED_LINKS',
-      ],
+      mePerm: [],
+      userPerm: [],
     });
     this.client = client;
   };
   /**
-   * @param {Message} message - message
-   * @param {Array} query - argument
-   * @param {Object} options - options
-   * @param {Object} options.guild - guild data
-   * @return {Message}
-   */
-  async launch(message, query, {guild, guildPlayer}) {
-    if (!this.client.music[message.guild.id]) return message.react('💢');
-    if (!this.client.music[message.guild.id].dispatcher) {
-      return message.channel.send(
-          language(guild.lg, 'commande_music_not_played'),
-      );
-    };
-    switch (this.client.music[message.guild.id].type) {
-      case 'player':
-        const duration =
-          moment.duration({
-            ms: guildPlayer.player_history[
-                this.client.music[message.guild.id].index].time,
-          });
-        const progress =
-         moment.duration({
-           ms: this.client.music[message.guild.id].dispatcher.streamTime,
-         });
-        // eslint-disable-next-line max-len
-        const progressBar = ['▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬'];
-        // eslint-disable-next-line max-len
-        const calcul = Math.round(progressBar.length * (this.client.music[message.guild.id].dispatcher.streamTime/ (guildPlayer.player_history[
-            this.client.music[message.guild.id].index].time)));
-        progressBar[calcul] = '🔘';
-        message.channel.send({
-          embed: {
-            color: guild.color,
-            title: language(guild.lg, 'command_music_queue'),
-            // eslint-disable-next-line max-len
-            description: `[${
-              guildPlayer
-                  .player_history[this.client.music[message.guild.id].index]
-                  .snippet.title
-            }](https://www.youtube.com/watch?v=${guildPlayer.player_history[this.client.music[message.guild.id].index].id.videoId})`,
-            thumbnail: {
-              url:
-              guildPlayer
-                  .player_history[this.client.music[message.guild.id].index]
-                  .snippet.thumbnails.default.url,
-            },
-            fields: [
-              {
-                name: 'Duration:',
-                // eslint-disable-next-line max-len
-                value: '[`' + progress.minutes() + ':' + progress.seconds() + '`] ' + progressBar.join('') + ' [`' + duration.minutes() + ':' + duration.seconds() + '`]',
-              },
-            ],
-          },
-        });
-        break;
-      case 'jpop':
-        message.channel.send({
-          embed: {
-            color: guild.color,
-            title: language(guild.lg, 'command_music_queue'),
-            // eslint-disable-next-line max-len
-            description: `[Jpop] ${this.client.jpop.data.song.title}${this.client.jpop.data.song.albums.length > 0 ?
-                `${this.client.jpop.data.song.albums[0].nameRomanji ?
-                `\n**name Romanji**: ${
-                  this.client.jpop.data.song.albums[0].nameRomanji
-                }` :
-                ''}` :
-                ''}\n**Song Duration**: ${
-              this.convert(this.client.jpop.data.song.duration*1000).minutes
-            }:${
-              this.convert(this.client.jpop.data.song.duration*1000).seconds
-            } minutes`,
-            thumbnail: {
-              url: `https://cdn.listen.moe/covers/${this.client.jpop.data.song.albums[0].image}`,
-            },
-          },
-        });
-        break;
-      case 'kpop':
-        message.channel.send({
-          embed: {
-            color: guild.color,
-            title: language(guild.lg, 'command_music_queue'),
-            // eslint-disable-next-line max-len
-            description: `[Kpop] ${this.client.kpop.data.song.title}${this.client.kpop.data.song.albums.length > 0 ?
-                  `${this.client.jpop.data.song.albums[0].nameRomanji ?
-                  `\n**name Romanji**: ${
-                    this.client.kpop.data.song.albums[0].nameRomanji
-                  }` :
-                  ''}` :
-                  ''}\n**Song Duration**: ${
-              this.convert(this.client.kpop.data.song.duration*1000).minutes
-            }:${
-              this.convert(this.client.kpop.data.song.duration*1000).seconds
-            } minutes`,
-            thumbnail: {
-              url: `https://cdn.listen.moe/covers/${this.client.kpop.data.song.albums[0].image}`,
-            },
-          },
-        });
-        break;
-      default:
-        break;
-    };
-  };
-  /**
-   * convert seconde to minute
-   * @param {Number} ms - seconde
-   * @return {Number}
-   */
-  convert(ms) {
-    const data = new Date(ms);
-    return {
-      seconds: data.getSeconds(),
-      minutes: data.getMinutes(),
-    };
+     * @param {Discord.Message} message - message
+     * @return {Promise<Discord.Message>}
+     */
+  async launch(message) {
+    const player = corePlayer.initPlayer(this.client, message.guild.id);
+    if (!player.dispatcher) return message.channel.send(`I don't play a music`);
+    const duration = moment.duration({ms: player.queue[player.index].time});
+    const progress = moment.duration({ms: player.dispatcher.streamTime});
+    const progressBar = ['▬', '▬', '▬', '▬', '▬', '▬', '▬',
+      '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬', '▬'];
+    const calcul = Math.round(progressBar.length *
+        (player.dispatcher.streamTime/ (player.queue[player.index].time)));
+    progressBar[calcul] = '🔘';
+    const npEmbed = new Discord.MessageEmbed()
+        .setTitle('Now playing')
+        .setDescription(`[${player.queue[player.index].title}](https://www.youtube.com/watch?v=${player.queue[player.index].songID})`)
+        .setThumbnail(player.queue[player.index].thumbnail)
+        .addField('Duration', '[`' + progress.minutes() + ':' +
+          progress.seconds() + '`] ' + progressBar.join('') + ' [`' +
+          duration.minutes() + ':' + duration.seconds() + '`]');
+    message.channel.send({embed: npEmbed});
   };
 };

@@ -1,14 +1,15 @@
 'use strict';
+const corePlayer = require('./../../plugin/Music');
 const Command = require('../../plugin/Command');
-const language = require('../../i18n');
+const Discord = require('discord.js');
 
 /**
  * Command class
  */
 module.exports = class Skip extends Command {
   /**
-   * @param {Client} client - Client
-   */
+     * @param {Discord.Client} client - Client
+     */
   constructor(client) {
     super(client, {
       name: 'skip',
@@ -19,52 +20,64 @@ module.exports = class Skip extends Command {
       enable: true,
       guildOnly: true,
       aliases: [],
-      mePerm: [
-        'ADD_REACTIONS',
-      ],
+      mePerm: [],
+      userPerm: [],
     });
     this.client = client;
   };
   /**
-   * @param {Message} message - message
-   * @param {Array} query - argument
-   * @param {Object} options - options
-   * @param {Object} options.guild - guild data
-   * @return {Message}
-   */
-  async launch(message, query, {guild, guildPlayer}) {
-    if (!this.client.music[message.guild.id]) return message.react('💢');
-    if (this.client.music[message.guild.id].dispatcher === null) {
-      return message.reply(language(guild.lg, 'command_music_notPlaying'));
-    };
-    const player = new (require('./play'))(this.client);
-    if (!player.hasPermission(message)) {
-      return message.channel.send(
-          language(guild.lg, 'command_skip_noPermission'),
-      );
-    };
-    if (this.client.music[message.guild.id].broadcast) {
-      return message.reply('⚠️');
-    };
-    switch (guildPlayer.player_loop) {
-      case 'off':
-        guildPlayer.player_history.shift();
-        guildPlayer =
-          await player.updateQueue(guildPlayer.player_history, message);
-        player.play(message, guildPlayer, guild);
-        break;
-      default:
-        await this.client.music[message.guild.id].dispatcher.destroy();
-        guildPlayer =
-          await player.updateQueue(guildPlayer.player_history, message);
-        if (this.client.music[message.guild.id].index ===
-            guildPlayer.player_history.length - 1) {
-          this.client.music[message.guild.id].index = 0;
-        } else {
-          this.client.music[message.guild.id].index++;
+     * @param {Discord.Message} message - message
+     * @return {Promise<Discord.Message>}
+     */
+  async launch(message) {
+    if (!message.member.voice.channel) return message.reply('💢');
+    const player = corePlayer.initPlayer(this.client, message.guild.id);
+    if (!player.dispatcher) return message.channel.send(`I don't play a music`);
+    if (!corePlayer.hasPermission(this.client, message)) {
+      const call = await corePlayer.callRequest(message,
+          new Discord.MessageEmbed(), {
+            required: `Require {{mustVote}} votes for skip this music`,
+            complete: `Vote completed, you skip this music`,
+            content: `Vote {{haveVoted}}/{{mustVote}}`,
+          });
+      if (call) {
+        if (!player.dispatcher) {
+          return message.channel.send(`I don't play a music`);
         };
-        player.play(message, guildPlayer, guild);
-        break;
-    }
+        switch (player.loop) {
+          case 'off':
+            player.queue.shift();
+            corePlayer.play(this.client, message);
+            break;
+          default:
+            await player.dispatcher.destroy();
+            if (player.index === player.queue.length - 1) {
+              player.index = 0;
+            } else {
+              player.index++;
+            };
+            player.play(message, guildPlayer, guild);
+            break;
+        }
+      } else {
+        return message.channel.send(`You don't skip music`);
+      };
+    } else {
+      switch (player.loop) {
+        case 'off':
+          player.queue.shift();
+          corePlayer.play(this.client, message);
+          break;
+        default:
+          await player.dispatcher.destroy();
+          if (player.index === player.queue.length - 1) {
+            player.index = 0;
+          } else {
+            player.index++;
+          };
+          player.play(message, guildPlayer, guild);
+          break;
+      }
+    };
   };
 };

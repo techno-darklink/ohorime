@@ -6,16 +6,16 @@ const Discord = require('discord.js');
 /**
  * Command class
  */
-module.exports = class Volume extends Command {
+module.exports = class Seek extends Command {
   /**
      * @param {Discord.Client} client - Client
      */
   constructor(client) {
     super(client, {
-      name: 'volume',
+      name: 'seek',
       category: 'music',
-      description: 'command_volume_description',
-      usage: 'volume',
+      description: 'command_seek_description',
+      usage: 'seek [number]',
       nsfw: false,
       enable: true,
       guildOnly: true,
@@ -34,29 +34,26 @@ module.exports = class Volume extends Command {
     if (!message.member.voice.channel) return message.reply('💢');
     const player = corePlayer.initPlayer(this.client, message.guild.id);
     if (!player.dispatcher) return message.channel.send(`I don't play a music`);
-    if (!args.join('') || isNaN(args.join(''))) {
-      return message.
-          channel.send(`Current volume is ${player.dispatcher.volume}%`);
+    if (!query.join('') || isNaN(query.join(''))) {
+      return message.channel.send(`You must enter a number value in seconds!`);
     };
     if (!corePlayer.hasPermission(this.client, message)) {
       const call = await corePlayer.callRequest(message,
           new Discord.MessageEmbed(), {
-            required: `Require {{mustVote}} votes for set volume`,
-            complete: `Vote completed, you set volume`,
+            required: `Require {{mustVote}} votes for seek the stream`,
+            complete: `Vote completed, you seek the stream`,
             content: `Vote {{haveVoted}}/{{mustVote}}`,
           });
       if (call) {
         if (!player.dispatcher) {
           return message.channel.send(`I don't play a music`);
         };
-        player.volume = args.join('');
-        player.dispatcher.setVolume(args.join('')/100);
+        corePlayer.play(this.client, message, query.join(''));
       } else {
-        return message.channel.send(`You don't skip music`);
+        return message.channel.send(`You don't set stream to resume`);
       };
     } else {
-      player.volume = args.join('');
-      player.dispatcher.setVolume(args.join('')/100);
+      corePlayer.play(this.client, message, query.join(''));
     };
   };
 };

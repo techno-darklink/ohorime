@@ -1,14 +1,15 @@
 'use strict';
+const corePlayer = require('./../../plugin/Music');
 const Command = require('../../plugin/Command');
-const language = require('../../i18n');
+const Discord = require('discord.js');
 
 /**
  * Command class
  */
 module.exports = class Resume extends Command {
   /**
-   * @param {Client} client - Client
-   */
+     * @param {Discord.Client} client - Client
+     */
   constructor(client) {
     super(client, {
       name: 'resume',
@@ -19,35 +20,36 @@ module.exports = class Resume extends Command {
       enable: true,
       guildOnly: true,
       aliases: [],
-      mePerm: [
-        'ADD_REACTIONS',
-      ],
+      mePerm: [],
+      userPerm: [],
     });
     this.client = client;
   };
   /**
-   * @param {Message} message - message
-   * @param {Array} query - argument
-   * @param {Object} options - options
-   * @param {Object} options.guild - guild data
-   * @return {Message}
-   */
-  async launch(message, query, {guild}) {
-    if (!this.client.music[message.guild.id]) return message.react('💢');
-    if (this.client.music[message.guild.id].dispatcher === null) {
-      return message.reply(language(guild.lg, 'command_music_notPlaying'));
+     * @param {Discord.Message} message - message
+     * @return {Promise<Discord.Message>}
+     */
+  async launch(message) {
+    if (!message.member.voice.channel) return message.reply('💢');
+    const player = corePlayer.initPlayer(this.client, message.guild.id);
+    if (!player.dispatcher) return message.channel.send(`I don't play a music`);
+    if (!corePlayer.hasPermission(this.client, message)) {
+      const call = await corePlayer.callRequest(message,
+          new Discord.MessageEmbed(), {
+            required: `Require {{mustVote}} votes for set resume the stream`,
+            complete: `Vote completed, you set resume the stream`,
+            content: `Vote {{haveVoted}}/{{mustVote}}`,
+          });
+      if (call) {
+        if (!player.dispatcher) {
+          return message.channel.send(`I don't play a music`);
+        };
+        player.dispatcher.resume();
+      } else {
+        return message.channel.send(`You don't set stream to resume`);
+      };
+    } else {
+      player.dispatcher.resume();
     };
-    const player = new (require('./play'))(this.client);
-    if (!player.hasPermission(message)) {
-      return message.channel.send('You do not have permission');
-    };
-    if (this.client.music[message.guild.id].broadcast) {
-      return message.reply('⚠️');
-    };
-    if (this.client.music[message.guild.id].isPlaying) {
-      return message.reply(language(guild.lg, 'command_music_isResume'));
-    };
-    this.client.music[message.guild.id].dispatcher.resume();
-    this.client.music[message.guild.id].isPlaying = true;
   };
 };

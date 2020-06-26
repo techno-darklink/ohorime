@@ -275,4 +275,8 @@ module.exports = function(client) {
     })
     res.end();
   });
+
+  app.get('/ping/:now', async (req, res) => {
+    return res.status(202).json({result: Date.now()-Number(req.params.now)});
+  });
 };
