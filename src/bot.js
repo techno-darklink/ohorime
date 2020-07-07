@@ -68,20 +68,20 @@ client.on('error', client.logger.error);
 process.on('uncaughtException', (error) => {
   console.warn(error);
   if (!client) return;
-  client.errorHook.send(error, {code: 'js'});
+  client.errorHook.send(error.stack, {code: 'js'});
 });
 process.on('unhandledRejection', (listener) => {
   console.warn(listener);
   if (!client) return;
-  client.errorHook.send(listener, {code: 'js'});
+  client.errorHook.send(listener.stack, {code: 'js'});
 });
 process.on('rejectionHandled', (listener) => {
   console.warn(listener);
   if (!client) return;
-  client.errorHook.send(listener, {code: 'js'});
+  client.errorHook.send(listener.stack, {code: 'js'});
 });
 process.on('warning', (warning) => {
   console.warn(warning);
   if (!client) return;
-  client.errorHook.send(warning, {code: 'js'});
+  client.errorHook.send(warning.stack, {code: 'js'});
 });
