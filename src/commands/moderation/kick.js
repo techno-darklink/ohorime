@@ -1,6 +1,5 @@
 'use strict';
 const Command = require('../../plugin/Command');
-const language = require('../../i18n');
 
 /**
  * Command class
@@ -14,7 +13,7 @@ module.exports = class Kick extends Command {
       name: 'kick',
       category: 'moderation',
       description: 'command_kick_description',
-      usage: 'kick (username | nickname | id) [reason]',
+      usage: 'kick (...mentions member) <-reason>',
       nsfw: false,
       enable: true,
       guildOnly: true,
@@ -26,47 +25,49 @@ module.exports = class Kick extends Command {
   };
   /**
    * @param {Message} message - message
-   * @param {Array} query - arguments
-   * @param {Object} options - options
-   * @param {Object} options.guild - guild data
-   * @return {Message|GuildMember}
+   * @param {Array<string>} query - arguments
+   * @return {Promise<Message>|GuildMember}
    */
-  launch(message, query, {guild}) {
-    const queryMember = query.shift();
-    const member = message.mentions.members.first() ||
-        message.guild.member(
-            message.mentions.users.first(),
-        ) ||
-        message.guild.members.cache.find((member) =>
-          member.id === queryMember) ||
-        message.guild.members.cache.find((member) =>
-          member.displayName === queryMember) ||
-        message.guild.members.cache.find((member) =>
-          member.user.username === queryMember) ||
-        message.guild.members.cache.find((member) =>
-          member.toString() === queryMember);
-    if (!member) {
-      return message.reply(language(guild.lg, 'member_not_found'));
-    };
-    if (message.member.roles.highest.position < member.roles.highest.position) {
-      return message.reply(language(guild.lg, 'command_kick_invalidPosition'));
-    };
-    if (message.guild.me.roles.highest.position <
-        member.roles.highest.posisiton) {
-      return message.reply(
-          language(guild.lg, 'command_kick_MeInvalidePosition'),
-      );
-    };
-    let errored = false;
-    return member.kick({reason: query.join(' ')}).catch((err) => {
-      console.log(err);
-      errored = true;
-      message.channel.send(language(guild.lg, 'command_kick_error'));
-      return message.channel.send(err, {code: 'js'});
-    }).then(() => {
-      if (!errored) {
-        message.channel.send(language(guild.lg, 'command_kick_success'));
+  async launch(message, query) {
+    message.mentions.members.each(async (member) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (message.member.roles.highest.position <
+          member.roles.highest.position &&
+          message.member.id !== message.guild.ownerID) {
+        return message.channel.send(
+            `❌ | [${
+              member.user.tag
+            }] You cannot kick someone with a higher position than you`);
       };
+      if (message.guild.me.roles.highest.position <
+        member.roles.highest.position) {
+        return message.channel.send(
+            `❌ | [${
+              member.user.tag
+            }] I have lower permissions than the user`);
+      };
+      if (!member.bannable) {
+        return message.channel.send(`❌ | [${
+          member.user.tag
+        }] I cannot kick this member`);
+      };
+      let serialize = query.join(' ');
+      serialize = serialize.split(/-+/g);
+      serialize.shift();
+      const mapping = [];
+      serialize.map((v) =>
+        mapping.push([v.split(/ +/g).shift()
+            .trim().toLowerCase(), v.split(/ +/g).slice(1).join(' ')]));
+      return member.kick(Object.fromEntries(mapping).reason).then(() => {
+        return message.channel.send(`✅ | [${
+          member.user.tag
+        }] This user has been successfully kicked`);
+      }).catch((e) => {
+        message.channel.send(`❌ | [${
+          member.user.tag
+        }] A problem occurred while trying to kick the userd`);
+        return message.channel.send(e.stack, {code: 'js'});
+      });
     });
   };
 };

@@ -23,6 +23,7 @@ module.exports = class OhorimeClient extends Client {
     this.logger = require('./plugin/Logger');
     this.music = {};
     this.pagination = {};
+    this.mute = {};
     this.jpop = {
       broadcast: null,
       dispatcher: null,

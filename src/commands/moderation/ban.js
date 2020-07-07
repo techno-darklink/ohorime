@@ -1,6 +1,5 @@
 'use strict';
 const Command = require('../../plugin/Command');
-const language = require('../../i18n');
 
 /**
  * Command class
@@ -14,7 +13,7 @@ module.exports = class Ban extends Command {
       name: 'ban',
       category: 'moderation',
       description: 'command_ban_description',
-      usage: 'ban (username | nickname | id) [days | reason] [reason]',
+      usage: 'ban (...mentions member) <-days -reason>',
       nsfw: false,
       enable: true,
       guildOnly: true,
@@ -26,56 +25,49 @@ module.exports = class Ban extends Command {
   };
   /**
    * @param {Message} message - message
-   * @param {Array} query - arguments
-   * @param {Object} options - options
-   * @param {Object} options.guild - guild data
-   * @return {Message|GuildMember}
+   * @param {Array<string>} query - arguments
+   * @return {Promise<Message>|GuildMember}
    */
-  launch(message, query, {guild}) {
-    const queryMember = query.shift();
-    const member = message.mentions.members.first() ||
-        message.guild.member(
-            message.mentions.users.first(),
-        ) ||
-        message.guild.members.cache.find((member) =>
-          member.id === queryMember) ||
-        message.guild.members.cache.find((member) =>
-          member.displayName === queryMember) ||
-        message.guild.members.cache.find((member) =>
-          member.user.username === queryMember) ||
-        message.guild.members.cache.find((member) =>
-          member.toString() === queryMember);
-    if (!member) {
-      return message.reply(language(guild.lg, 'member_not_found'));
-    };
-    if (message.member.roles.highest.position < member.roles.highest.position) {
-      return message.reply(language(guild.lg, 'command_ban_invalidPosition'));
-    };
-    if (message.guild.me.roles.highest.position <
-        member.roles.highest.posisiton) {
-      return message.reply(
-          language(guild.lg, 'command_ban_MeInvalidePosition'),
-      );
-    };
-    let suposedDay = 0;
-    let suposedReason;
-    if (isNaN(query[0])) {
-      suposedReason = query.join(' ');
-    } else {
-      suposedDay = query.shift();
-      suposedReason = query.join(' ');
-    };
-    let errored = false;
-    return member.ban({days: suposedDay, reason: suposedReason})
-        .catch((err) => {
-          console.error(err);
-          errored = true;
-          message.channel.send(language(guild.lg, 'command_ban_error'));
-          message.channel.send(err, {code: 'js'});
-        }).then(() => {
-          if (!errored) {
-            message.channel.send(language(guild.lg, 'command_ban_success'));
-          };
-        });
+  async launch(message, query) {
+    message.mentions.members.each(async (member) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (message.member.roles.highest.position <
+          member.roles.highest.position &&
+          message.member.id !== message.guild.ownerID) {
+        return message.channel.send(
+            `❌ | [${
+              member.user.tag
+            }] You cannot banish someone with a higher position than you`);
+      };
+      if (message.guild.me.roles.highest.position <
+        member.roles.highest.position) {
+        return message.channel.send(
+            `❌ | [${
+              member.user.tag
+            }] I have lower permissions than the user`);
+      };
+      if (!member.bannable) {
+        return message.channel.send(`❌ | [${
+          member.user.tag
+        }] I cannot ban this member`);
+      };
+      let serialize = query.join(' ');
+      serialize = serialize.split(/-+/g);
+      serialize.shift();
+      const mapping = [];
+      serialize.map((v) =>
+        mapping.push([v.split(/ +/g).shift()
+            .trim().toLowerCase(), v.split(/ +/g).slice(1).join(' ')]));
+      return member.ban(Object.fromEntries(mapping)).then(() => {
+        return message.channel.send(`✅ | [${
+          member.user.tag
+        }] This user has been successfully banned`);
+      }).catch((e) => {
+        message.channel.send(`❌ | [${
+          member.user.tag
+        }] A problem occurred while trying to ban the userd`);
+        return message.channel.send(e.stack, {code: 'js'});
+      });
+    });
   };
 };
