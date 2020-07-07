@@ -34,9 +34,9 @@ module.exports = class Volume extends Command {
     if (!message.member.voice.channel) return message.reply('💢');
     const player = corePlayer.initPlayer(this.client, message.guild.id);
     if (!player.dispatcher) return message.channel.send(`I don't play a music`);
-    if (!args.join('') || isNaN(args.join(''))) {
+    if (!query.join('') || isNaN(query.join(''))) {
       return message.
-          channel.send(`Current volume is ${player.dispatcher.volume}%`);
+          channel.send(`Current volume is ${player.dispatcher.volume*100}%`);
     };
     if (!corePlayer.hasPermission(this.client, message)) {
       const call = await corePlayer.callRequest(message,
@@ -49,14 +49,14 @@ module.exports = class Volume extends Command {
         if (!player.dispatcher) {
           return message.channel.send(`I don't play a music`);
         };
-        player.volume = args.join('');
-        player.dispatcher.setVolume(args.join('')/100);
+        player.volume = query.join('');
+        player.dispatcher.setVolume(query.join('')/100);
       } else {
         return message.channel.send(`You don't skip music`);
       };
     } else {
-      player.volume = args.join('');
-      player.dispatcher.setVolume(args.join('')/100);
+      player.volume = query.join('');
+      player.dispatcher.setVolume(query.join('')/100);
     };
   };
 };
