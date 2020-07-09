@@ -125,12 +125,13 @@ module.exports = class Warn extends Command {
   /**
    * @param {Message} message - message
    * @param {Array<string>} query - arguments
+   * @param {Object} params
    * @param {Object} options
    * @param {string} options.reason
    * @param {string|number} options.time
    * @return {Promise<Message>|GuildMember}
    */
-  async launch(message, query, options) {
+  async launch(message, query, params, options) {
     if (!query.join('') || (message.mentions.members.size < 1 && query[0] !== 'fetch')) {
       return message.channel.send({embed: this.badUsage});
     };

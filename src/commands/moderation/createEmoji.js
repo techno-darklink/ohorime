@@ -29,10 +29,11 @@ module.exports = class SetEmoji extends Command {
   /**
    * @param {Message} message - message
    * @param {Array<string>} query - arguments
+   * @param {Object} options - commands params
    * @param {Object} params - commands params
    * @return {Promise<Message>}
    */
-  launch(message, query, params) {
+  launch(message, query, options, params) {
     if (!query.join('') && message.attachments.size < 1) {
       return message.channel.send({embed: this.badUsage});
     };

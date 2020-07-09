@@ -326,13 +326,13 @@ module.exports = class Message extends event {
     serialize.map((v) =>
       mapping.push([v.split(/ +/g).shift()
           .trim().toLowerCase(), v.split(/ +/g).slice(1).join(' ')]));
-    cmd.launch(message, query, Object.fromEntries(mapping), {
+    cmd.launch(message, query, {
       user,
       guild,
       guildPlayer,
       userPlayer,
       levelingUser,
       levelingGuild,
-    });
+    }, Object.fromEntries(mapping));
   };
 };
