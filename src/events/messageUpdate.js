@@ -93,7 +93,7 @@ module.exports = class MessageUpdate extends event {
     /**
      * Ignore music et modération command
      */
-    if (['music', 'moderation'].includes(cmd.category)) return;
+    if (['music', 'moderation'].includes(cmd.help.category)) return;
     /**
      * Check bot permisisons
      */

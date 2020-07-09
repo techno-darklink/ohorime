@@ -319,7 +319,14 @@ module.exports = class Message extends event {
         message.author.id !== this.client.appInfo.owner.id) {
       return message.reply(language(guild.lg, 'command_disable'));
     };
-    cmd.launch(message, query, {
+    let serialize = query.join(' ');
+    serialize = serialize.split(/-+/g);
+    serialize.shift();
+    const mapping = [];
+    serialize.map((v) =>
+      mapping.push([v.split(/ +/g).shift()
+          .trim().toLowerCase(), v.split(/ +/g).slice(1).join(' ')]));
+    cmd.launch(message, query, Object.fromEntries(mapping), {
       user,
       guild,
       guildPlayer,

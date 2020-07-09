@@ -9,4 +9,5 @@ module.exports = {
   LevelingGuild: require('./LevelingGuild'),
   PlayerUser: require('./PlayerUser'),
   PlayerGuild: require('./PlayerGuild'),
+  Warn: require('./Warn'),
 };

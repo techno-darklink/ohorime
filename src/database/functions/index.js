@@ -9,4 +9,5 @@ module.exports = (client) => {
   require('./functionLevelingGuild')(client);
   require('./functionPlayerUser')(client);
   require('./functionPlayerGuild')(client);
+  require('./functionWarn')(client);
 };

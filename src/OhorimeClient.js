@@ -24,6 +24,7 @@ module.exports = class OhorimeClient extends Client {
     this.music = {};
     this.pagination = {};
     this.mute = {};
+    this.warn = {};
     this.jpop = {
       broadcast: null,
       dispatcher: null,

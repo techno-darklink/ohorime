@@ -13,7 +13,7 @@ module.exports = class Kick extends Command {
       name: 'kick',
       category: 'moderation',
       description: 'command_kick_description',
-      usage: 'kick (...mentions member) <-reason>',
+      usage: ['kick (...mentions member) <-reason>'],
       nsfw: false,
       enable: true,
       guildOnly: true,
@@ -29,6 +29,9 @@ module.exports = class Kick extends Command {
    * @return {Promise<Message>|GuildMember}
    */
   async launch(message, query) {
+    if (!query.join('') || message.mentions.members.size < 1) {
+      return message.channel.send({embed: this.badUsage});
+    };
     message.mentions.members.each(async (member) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       if (message.member.roles.highest.position <
@@ -65,7 +68,7 @@ module.exports = class Kick extends Command {
       }).catch((e) => {
         message.channel.send(`❌ | [${
           member.user.tag
-        }] A problem occurred while trying to kick the userd`);
+        }] A problem occurred while trying to kick the user`);
         return message.channel.send(e.stack, {code: 'js'});
       });
     });

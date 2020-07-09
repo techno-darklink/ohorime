@@ -14,7 +14,7 @@ module.exports = class Mute extends Command {
       name: 'mute',
       category: 'moderation',
       description: 'command_mute_description',
-      usage: 'mute (...mentions members) <-time>',
+      usage: ['mute (...mentions members) <-time>'],
       nsfw: false,
       enable: true,
       guildOnly: true,
@@ -31,6 +31,9 @@ module.exports = class Mute extends Command {
    * @return {Promise<Message>}
    */
   async launch(message, query) {
+    if (!query.join('') || message.mentions.members.size < 1) {
+      return message.channel.send({embed: this.badUsage});
+    };
     const awaitInit = new Promise(async (resolve) => {
       let _muteRole = message.guild.roles.cache
           .find((role) => role.name === 'mute');

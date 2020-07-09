@@ -66,24 +66,24 @@ module.exports = class Help extends Command {
     };
     const content = {
       embed: {
-        title: language(guild.lg, 'command_help_title'),
+        title: 'Command help',
         color: guild.color,
-        url: 'http://anikami.fr',
+        url: 'https://ohori.me/',
         author: {
           name: message.author.username,
           icon_url: message.author
               .displayAvatarURL({format: 'webp', dynamic: true}),
-          url: 'http://anikami.fr',
+          url: 'https://ohori.me/',
         },
-        thumbnail: {
+        thumbnail: message.guild.iconURL() ? {
           url: message.guild.iconURL({format: 'webp', dynamic: true}),
-        },
+        } : {},
         fields: [],
         timestamp: new Date(),
         footer: {
           text: this.client.user.username,
           icon_url: this.client.user
-              .displayAvatarURL({format: 'webp', dynamic: true, size: 2048}),
+              .displayAvatarURL({format: 'webp', dynamic: true}),
         },
       },
     };

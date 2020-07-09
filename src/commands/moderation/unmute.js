@@ -13,7 +13,7 @@ module.exports = class UnMute extends Command {
       name: 'unmute',
       category: 'moderation',
       description: 'command_unmute_description',
-      usage: 'unmute (...mentions members)',
+      usage: ['unmute (...mentions members)'],
       nsfw: false,
       enable: true,
       guildOnly: true,
@@ -30,6 +30,9 @@ module.exports = class UnMute extends Command {
    * @return {Promise<Message>}
    */
   async launch(message, query) {
+    if (!query.join('') || message.mentions.members.size < 1) {
+      return message.channel.send({embed: this.badUsage});
+    };
     const muteRole = message.guild.roles.cache
         .find((role) => role.name === 'mute');
     if (!muteRole) {

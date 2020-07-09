@@ -27,6 +27,7 @@ const ytdl = require('ytdl-core');
  * @property {string} title - Song title
  * @property {string} thumbnail - Thumbnail url
  * @property {numer} time - Song time
+ * @property {Boolean} isLive - If song is a live
  * @property {string} service - Service
  * @property {Discord.GuildMember} member - Guild member
  */
@@ -144,18 +145,17 @@ module.exports.play = async function(client, message, seek = 0) {
     };
   };
   const msgDl = await message.channel.send('Music downloading 📥');
-  player.dispatcher = player.connection.play(
-      await ytdl(`https://www.youtube.com/watch?v=${player.queue[player.index].songID}`, {
-        filter: 'audioonly',
-        quality: 'highestaudio',
-      }), {
-        volume: player.volume,
-        highWaterMark: 100,
-        fec: true,
-        plp: 30,
-        bitrate: 64,
-        seek,
-      },
+  const stream = () => ytdl(`https://www.youtube.com/watch?v=${player.queue[player.index].songID}`,
+  player.queue[player.index].isLive ?
+    {quality: [128, 127, 120, 96, 95, 94, 93]} : {filter: 'audioonly'});
+  player.dispatcher = player.connection.play(stream(), {
+    volume: player.volume,
+    highWaterMark: 100,
+    fec: true,
+    plp: 30,
+    bitrate: 64,
+    seek,
+  },
   );
   player.connection.voice.setSelfDeaf(true);
   player.connection.voice.setSelfMute(false);
@@ -275,4 +275,9 @@ module.exports.callRequest = async function(message, embed, options) {
       resolve(true);
     };
   });
+};
+
+module.exports.getInfoVideo = async (ids) => {
+  return await axios(`https://www.googleapis.com/youtube/v3/videos?key=${credentials.YOUTUBE_KEY}&${ids.map((v) => `id=${v}`).join('&')}&part=snippet,contentDetails`)
+      .then((response) => response.data);
 };

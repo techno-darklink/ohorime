@@ -13,7 +13,7 @@ module.exports = class Purge extends Command {
       name: 'purge',
       category: 'moderation',
       description: 'command_purge_description',
-      usage: 'purge (number) [...mentions channel]',
+      usage: ['purge (number) [...mentions channels]'],
       nsfw: false,
       enable: true,
       guildOnly: true,
@@ -29,6 +29,9 @@ module.exports = class Purge extends Command {
    * @return {Promise<Message>}
    */
   launch(message, query) {
+    if (!query.join('') || message.mentions.channels.size < 1) {
+      return message.channel.send({embed: this.badUsage});
+    };
     if (message.mentions.channels.size > 0) {
       return message.mentions.channels.each(async (channel) => {
         await new Promise((resolve) => setTimeout(resolve, 2000));

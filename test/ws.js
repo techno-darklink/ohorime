@@ -12,7 +12,7 @@ function heartbeat(interval) {
 }
 
 function connect() {
-	ws = new WebSocket('ws:/localhost:8006');
+	ws = new WebSocket('wss:/gateway.ohori.me');
 
 	ws.onopen = () => {
 		clearInterval(heartbeatInterval);

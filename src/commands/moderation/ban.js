@@ -13,7 +13,9 @@ module.exports = class Ban extends Command {
       name: 'ban',
       category: 'moderation',
       description: 'command_ban_description',
-      usage: 'ban (...mentions member) <-days -reason>',
+      usage: [
+        'ban (...mentions member) <-days -reason>',
+      ],
       nsfw: false,
       enable: true,
       guildOnly: true,
@@ -29,6 +31,9 @@ module.exports = class Ban extends Command {
    * @return {Promise<Message>|GuildMember}
    */
   async launch(message, query) {
+    if (!query.join('') || message.mentions.members.size < 1) {
+      return message.channel.send({embed: this.badUsage});
+    };
     message.mentions.members.each(async (member) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       if (message.member.roles.highest.position <
@@ -65,7 +70,7 @@ module.exports = class Ban extends Command {
       }).catch((e) => {
         message.channel.send(`❌ | [${
           member.user.tag
-        }] A problem occurred while trying to ban the userd`);
+        }] A problem occurred while trying to ban the user`);
         return message.channel.send(e.stack, {code: 'js'});
       });
     });
