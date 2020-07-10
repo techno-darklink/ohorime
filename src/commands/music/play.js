@@ -36,7 +36,9 @@ module.exports = class Play extends Command {
       return message.channel.send(
           `You must connect on the voice channel before !`);
     };
-    if (!corePlayer.hasPermission(this.client, message)) {
+    if (!corePlayer.hasPermission(this.client, message) &&
+    (message.guild.me.voice.channel && message.guild.me.voice.channelID ===
+      message.member.voice.channelID)) {
       return message.channel.send(`Do you not have necessery permission`);
     };
 
@@ -47,8 +49,8 @@ module.exports = class Play extends Command {
       return corePlayer.play(this.client, message);
     };
 
-    if (query.join('')
-        .match(/https?:\/\/(www.)?youtu(.be|be.com)/g).length > 0) {
+    if (/^https?:\/\/(youtu\.be\/|(www\.)?youtube.com\/(embed|v)\/)/i.test(
+        query.join(''))) {
       const serialize = query.join('').split('?')[1].split(/&/g);
       const i = serialize.findIndex((v) => v.startsWith('v'));
       const info = await corePlayer.getInfoVideo([serialize[i].split('=')[1]]);
@@ -152,7 +154,7 @@ module.exports = class Play extends Command {
             time += parseInt(parse.join('').split('S')[0])*1000;
           };
           const song = {
-            songID: serialize[i].split('=')[1],
+            songID: info.items[0].id,
             guildID: message.guild.id,
             title: info.items[0].snippet.title,
             thumbnail: info.items[0].snippet.thumbnails.high.url,
